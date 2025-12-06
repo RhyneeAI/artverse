@@ -39,6 +39,18 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+    # Firebase Core (wajib)
+  firebase_core: ^2.24.0
+  
+  # Firebase Services yang dibutuhkan
+  firebase_auth: ^4.13.0        # Untuk autentikasi
+  cloud_firestore: ^4.13.0      # Untuk database NoSQL
+  firebase_storage: ^11.6.0     # Untuk penyimpanan file
+  # firebase_messaging: ^14.7.0 # Untuk push notification (opsional)
+  
+  # Provider untuk state management
+  provider: ^6.1.1
+
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your

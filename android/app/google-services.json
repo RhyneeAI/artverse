@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "943225969366",
+    "project_id": "artverse-d98ef",
+    "storage_bucket": "artverse-d98ef.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:943225969366:android:7c340d5dbe727c6811c777",
+        "android_client_info": {
+          "package_name": "com.example.artverse"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "943225969366-itufnn9qjrf8m775k2dfd5beeqf82iui.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCV2A8uhtRhsi_b_sn83jwljNfYfSl9Ejs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "943225969366-itufnn9qjrf8m775k2dfd5beeqf82iui.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
