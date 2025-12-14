@@ -1,4 +1,4 @@
-import 'package:artverse/auth/email_verification.dart';
+// import 'package:artverse/auth/email_verification.dart';
 import 'package:artverse/utils/constants.dart';
 import 'package:artverse/utils/snackbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -143,14 +143,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 40),
+
                 // Back button
-                IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: () => Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginScreen())
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    onPressed: () => Navigator.pop(context),  // Kembali normal, bukan ganti stack
                   ),
                 ),
+
                 const SizedBox(height: 20),
 
                 const Text(
@@ -164,14 +166,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 32),
 
+                // Full Name
                 TextField(
                   controller: _fullNameController,
-                  decoration: InputDecoration(
-                    labelText: 'Full Name',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                    filled: true,
-                    fillColor: AppColors.background,
-                  ),
+                  decoration: customInputDecoration(labelText: 'Full Name'),
                 ),
                 const SizedBox(height: 16),
 
@@ -179,11 +177,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 TextField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
+                  decoration: customInputDecoration(
                     labelText: 'Email',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                    filled: true,
-                    fillColor: AppColors.background,
+                    hintText: 'contoh: nama@artverse.com',
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -193,12 +189,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   controller: _birthDateController,
                   readOnly: true,
                   onTap: () => _selectDate(context),
-                  decoration: InputDecoration(
+                  decoration: customInputDecoration(
                     labelText: 'Birth of Date',
                     suffixIcon: const Icon(Icons.calendar_today),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                    filled: true,
-                    fillColor: AppColors.background,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -207,19 +200,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 TextField(
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
-                  decoration: InputDecoration(
+                  decoration: customInputDecoration(
                     labelText: 'Phone Number',
-                    prefixIcon: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(width: 12),
-                        Text('🇮🇩 +62', style: TextStyle(fontSize: 16)),
-                        SizedBox(width: 8),
-                      ],
+                    prefixIcon: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('🇮🇩', style: TextStyle(fontSize: 24)),
+                          SizedBox(width: 8),
+                          Text('+62', style: TextStyle(fontSize: 16)),
+                        ],
+                      ),
                     ),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                    filled: true,
-                    fillColor: AppColors.background,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -228,15 +221,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 TextField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
-                  decoration: InputDecoration(
+                  decoration: customInputDecoration(
                     labelText: 'Set Password',
                     suffixIcon: IconButton(
                       icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
                       onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                     ),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                    filled: true,
-                    fillColor: AppColors.background,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -245,15 +235,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 TextField(
                   controller: _rePasswordController,
                   obscureText: _obscurePassword,
-                  decoration: InputDecoration(
+                  decoration: customInputDecoration(
                     labelText: 'Re-enter Password',
                     suffixIcon: IconButton(
                       icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
                       onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                     ),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                    filled: true,
-                    fillColor: AppColors.background,
                   ),
                 ),
                 const SizedBox(height: 32),
@@ -266,11 +253,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
                     child: _isLoading
-                        ? const CircularProgressIndicator(color: AppColors.textPrimary)
-                        : const Text('Register', style: TextStyle(fontSize: 16, color: AppColors.textPrimary)),
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                          )
+                        : const Text('Register', style: TextStyle(fontSize: 16, color: Colors.white)),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -281,7 +272,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   children: [
                     const Text('Already have an account? '),
                     TextButton(
-                      onPressed: () => Navigator.pushReplacement(
+                      onPressed: () => Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const LoginScreen()),
                       ),

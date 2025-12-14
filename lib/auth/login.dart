@@ -19,6 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // Untuk toggle visibility password
   bool _obscureText = true;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -37,9 +38,14 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
+      );
+
+      SnackbarHelper.showSuccess(
+        context,
+        'Login berhasil!',
       );
 
       Navigator.pushReplacement(
@@ -80,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 8),
               const Text(
-                'Enter your username and password to log in',
+                'Enter your email and password to log in',
                 style: TextStyle(
                   fontSize: 16,
                   color: AppColors.textSecondary,
@@ -88,29 +94,24 @@ class _LoginScreenState extends State<LoginScreen> {
                 textAlign: TextAlign.left,
               ),
               const SizedBox(height: 32),
+
+              // Email Field
               TextField(
                 controller: _emailController,
-                keyboardType: TextInputType.emailAddress, 
-                decoration: InputDecoration(
+                keyboardType: TextInputType.emailAddress,
+                decoration: customInputDecoration(
                   labelText: 'Email',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  filled: true,
-                  fillColor: AppColors.background,
+                  hintText: 'contoh: nama@artverse.com',
                 ),
               ),
               const SizedBox(height: 16),
+
+              // Password Field – sekarang pakai customInputDecoration juga
               TextField(
                 controller: _passwordController,
                 obscureText: _obscureText,
-                decoration: InputDecoration(
+                decoration: customInputDecoration(
                   labelText: 'Password',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  filled: true,
-                  fillColor: AppColors.background,
                   suffixIcon: IconButton(
                     icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
                     onPressed: () {
@@ -122,11 +123,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 8),
+
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
-                    // Logic navigasi ke forgot password (pakai FirebaseAuth.sendPasswordResetEmail)
+                    // Nanti tambah logic sendPasswordResetEmail
                   },
                   child: const Text(
                     'Forgot Password?',
@@ -135,30 +137,40 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _login, 
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+
+              // Tombol Log In
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _isLoading ? null : _login,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                ),
-                child: const Text(
-                  'Log In',
-                  style: TextStyle(fontSize: 16, color: AppColors.textPrimary),
+                  child: _isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
+                          'Log In',
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        ),
                 ),
               ),
               const SizedBox(height: 24),
+
+              // Link ke Register
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text("Don't have an account? "),
                   TextButton(
                     onPressed: () {
-                      Navigator.pushReplacement(
-                        context, 
-                        MaterialPageRoute(builder: (context) => RegisterScreen()));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                      );
                     },
                     child: const Text(
                       'Sign Up',
