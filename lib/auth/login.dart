@@ -1,4 +1,6 @@
+import 'package:artverse/auth/register.dart';
 import 'package:artverse/utils/constants.dart';
+import 'package:artverse/utils/snackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:artverse/home/home.dart';
@@ -30,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
     String password = _passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      _showError('Please enter email and password');
+      SnackbarHelper.showError(context, 'Please enter email and password');
       return;
     }
 
@@ -51,16 +53,10 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         errorMessage = 'Invalid username or password';
       }
-      _showError(errorMessage);
+      SnackbarHelper.showError(context, errorMessage);
     } catch (e) {
-      _showError('An unexpected error occurred: $e');
+      SnackbarHelper.showError(context, 'An unexpected error occurred: $e');
     }
-  }
-
-  void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: AppColors.primary),
-    );
   }
 
   @override
@@ -160,7 +156,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   const Text("Don't have an account? "),
                   TextButton(
                     onPressed: () {
-                      // Logic navigasi ke sign up screen
+                      Navigator.pushReplacement(
+                        context, 
+                        MaterialPageRoute(builder: (context) => RegisterScreen()));
                     },
                     child: const Text(
                       'Sign Up',
