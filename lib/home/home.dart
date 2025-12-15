@@ -1,3 +1,4 @@
+import 'package:artverse/news/create_news.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -7,7 +8,23 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('ArtVerse Home')),
-      body: const Center(child: Text('Welcome! Berita Design di sini.')),
+      body: Center(
+        child: Column(
+          children: [
+            Text('Welcome! Berita Design di sini.'),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => CreateNewsScreen()),
+                );
+              },
+              child: Text("Tambah Berita"),
+            )
+          ],
+        )
+      ),
+      
     );
   }
 }
