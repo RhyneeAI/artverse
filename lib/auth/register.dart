@@ -4,8 +4,8 @@ import 'package:artverse/utils/snackbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Untuk format tanggal
-import 'package:artverse/auth/login.dart'; // Nanti buat navigasi balik ke login
+import 'package:intl/intl.dart';
+import 'package:artverse/auth/login.dart'; 
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -25,6 +25,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   DateTime? _selectedDate;
   bool _obscurePassword = true;
+  bool _obscureRePassword = true;
   bool _isLoading = false;
 
   @override
@@ -234,12 +235,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 // Re-enter Password
                 TextField(
                   controller: _rePasswordController,
-                  obscureText: _obscurePassword,
+                  obscureText: _obscureRePassword,
                   decoration: customInputDecoration(
                     labelText: 'Re-enter Password',
                     suffixIcon: IconButton(
-                      icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
-                      onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                      icon: Icon(_obscureRePassword ? Icons.visibility_off : Icons.visibility),
+                      onPressed: () => setState(() => _obscureRePassword = !_obscureRePassword),
                     ),
                   ),
                 ),
