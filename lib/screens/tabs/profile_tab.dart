@@ -6,14 +6,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+class ProfileTab extends StatefulWidget {
+  const ProfileTab({super.key});
 
   @override
-  _ProfileScreenState createState() => _ProfileScreenState();
+  _ProfileTabState createState() => _ProfileTabState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileTabState extends State<ProfileTab> {
   final user = FirebaseAuth.instance.currentUser!;
 
   final TextEditingController _fullNameController = TextEditingController();
