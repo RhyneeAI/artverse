@@ -14,18 +14,19 @@ dependencies:
     sdk: flutter
 
   # Firebase - Gunakan versi terbaru yang saling kompatibel
-  firebase_core: ^4.2.1
-  firebase_auth: ^6.1.2
-  cloud_firestore: ^6.1.0
-  firebase_storage: ^13.0.4
+  # firebase_core: ^4.2.1
+  # firebase_auth: ^6.1.2
+  # cloud_firestore: ^6.1.0
+  # firebase_storage: ^13.0.4
 
   # Package lain
   provider: ^6.1.1
-  flutter_quill: ^11.5.0 # Versi ini kompatibel dengan Firebase baru
+  flutter_quill: ^11.5.0 
   image_picker: ^1.1.2
+  google_fonts: ^6.2.1
 
-  flutter_lints: ^5.0.0
-  firebase_app_check: ^0.4.1+2
+  # flutter_lints: ^5.0.0
+  # firebase_app_check: ^0.4.1+2
   logger: ^2.6.2
 
 dev_dependencies:
@@ -38,6 +39,8 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/profile/
+    - assets/images/logo/
+    - assets/images/dummy/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

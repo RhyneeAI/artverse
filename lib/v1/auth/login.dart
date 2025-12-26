@@ -1,6 +1,6 @@
-import 'package:artverse/auth/register.dart';
-import 'package:artverse/utils/constants.dart';
-import 'package:artverse/utils/snackbar.dart';
+import 'package:artverse/v1/auth/register.dart';
+import 'package:artverse/v1/utils/constants.dart';
+import 'package:artverse/v1/utils/snackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:artverse/home/home.dart';

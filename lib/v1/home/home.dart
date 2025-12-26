@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:artverse/utils/constants.dart';
+import 'package:artverse/v1/utils/constants.dart';
 import 'package:artverse/models/news_model.dart';
-import 'package:artverse/services/news_service.dart';
-import 'package:artverse/components/bottom_navbar.dart'; // Import di sini
-import 'package:artverse/screens/tabs/home_tab.dart'; // Tab home dipisah
+import 'package:artverse/v1/services/news_service.dart';
+import 'package:artverse/v1/components/bottom_navbar.dart'; // Import di sini
+import 'package:artverse/v1/screens/tabs/home_tab.dart'; // Tab home dipisah
 // import 'package:artverse/screens/tabs/explore_tab.dart';
 // import 'package:artverse/screens/tabs/bookmark_tab.dart';
 import 'package:artverse/screens/tabs/profile_tab.dart';
