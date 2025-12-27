@@ -1,4 +1,6 @@
+import 'package:artverse/controllers/auth_controller.dart';
 import 'package:artverse/screens/auth/login_screen.dart';
+import 'package:artverse/v1/utils/snackbar.dart';
 import 'package:artverse/widgets/auth_widget.dart';
 import 'package:artverse/utils/date.dart';
 import 'package:flutter/material.dart';
@@ -19,11 +21,85 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool _obscurePassword = true;
   bool _reObscurePassword = true;
-  DateTime? _selectedDate = DateTime(DateTime.now().year);
+  DateTime? _selectedDate = DateTime(DateTime.now().year - 18, DateTime.now().month, DateTime.now().day);
+
+  final AuthController _authController = AuthController();
+
   @override
   void dispose() {
     _birthDateController.dispose();
     super.dispose();
+  }
+
+  void _handleRegister() async {
+    String fullName = _fullNameController.text;
+    String email = _emailController.text;
+    String password = _passwordController.text;
+    String rePassword = _rePasswordController.text;
+    String birthDate = _birthDateController.text;
+
+    // Validation
+    if (fullName.isEmpty) {
+      SnackbarHelper.showError(context, 'Full name is required'); return;
+    }
+    
+    if (email.isEmpty) {
+      SnackbarHelper.showError(context, 'Email is required'); return;
+    }
+
+    if (!email.contains('@')) {
+      SnackbarHelper.showError(context, 'Incorrect Email format'); return;
+    }
+    
+    if (password.isEmpty) {
+      SnackbarHelper.showError(context, 'Password is required'); return;
+    }
+    
+    if (birthDate.isEmpty) {
+      SnackbarHelper.showError(context, 'Birth date is required'); return;
+    }
+    
+    if (password.isEmpty) {
+      SnackbarHelper.showError(context, 'Password is required'); return;
+    }
+
+    if (rePassword.isEmpty) {
+      SnackbarHelper.showError(context, 'Re-Password is required'); return;
+    }
+
+    if (password != rePassword) {
+      SnackbarHelper.showError(context, 'Passwords do not match');
+      return;
+    }
+
+    if (_passwordController.text.length < 6) {
+      SnackbarHelper.showError(context, 'Password min 6 characters');
+      return;
+    }
+
+    setState(() => _authController.isLoading = true);
+
+    try {
+      await _authController.register(
+        email: email,
+        password: password,
+        fullName: fullName,
+        birthDate: _selectedDate != null
+            ? "${_selectedDate!.year}-${_selectedDate!.month}-${_selectedDate!.day}"
+            : null,
+      );
+
+      SnackbarHelper.showSuccess(context, 'Registration successful!');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => LoginScreen()),
+      );
+    } catch (e) {
+      SnackbarHelper.showError(context, 'Registration failed!');
+      print(e.toString());
+    } finally {
+      setState(() => _authController.isLoading = false);
+    }
   }
 
   @override
@@ -36,7 +112,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 40),
-                            Text(
+              Text(
                 'Sign Up',
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                   fontSize: 28,
@@ -48,7 +124,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
               // Subtitle
               Text(
-                'Create an account to get start!',
+                'Create an account to get started!',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.grey,
                 ),
@@ -59,7 +135,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: 8),
               AuthTextField(
                 controller: _fullNameController,
-                hint: 'Verona Michigan',
+                hint: 'Verona Everlyn',
               ),
 
               const SizedBox(height: 20),
@@ -82,14 +158,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 readOnly: true,
                 obscure: false,
                 onTap: () async {
-                    final pickedDate = await selectDate(context: context);
-                    if (pickedDate != null) {
-                        setState(() {
-                            _selectedDate = pickedDate;
-                            print(_selectedDate);
-                            _birthDateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-                        });
-                    }
+                  final pickedDate = await selectDate(
+                    context: context,
+                    initialDate: _selectedDate, 
+                  );
+                  if (pickedDate != null) {
+                    setState(() {
+                      _selectedDate = pickedDate;
+                      _birthDateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                    });
+                  }
                 },
                 suffixIcon: Icon(Icons.calendar_today),
                 keyboardType: TextInputType.datetime,
@@ -142,10 +220,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: 24),
         
               AuthButton(
-                text: 'Sign Up',
+                text: _authController.isLoading ? 'Creating account...' : 'Sign Up',
                 onPressed: () {
-                  
+                  if (_authController.isLoading) return;
+                  _handleRegister();
                 },
+                isDisabled: _authController.isLoading,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

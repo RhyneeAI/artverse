@@ -113,7 +113,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Text(
                         'Profile',
                         style: TextStyle(
-                          fontSize: 25,
+                          fontSize: 28,
                           fontWeight: FontWeight.bold,
                           height: 1.2,
                         ),
@@ -129,6 +129,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         );
                         if (confirm) {
                           await _authController.logout();
+                          SnackbarHelper.showSuccess(context, 'Berhasil Logout');
+
+                          await Future.delayed(Duration(milliseconds: 772));
+
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(builder: (_) => LoginScreen()),
@@ -202,7 +206,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 8),
                 AuthTextField(
                     controller: _fullNameController,
-                    hint: 'Verona Michigan',
+                    hint: 'Verona Everlyn',
                     keyboardType: TextInputType.name,
                 ),
 
@@ -240,7 +244,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     hint: 'DD/MM/YYYY',
                     readOnly: true, 
                     onTap: () async {
-                        final pickedDate = await selectDate(context: context);
+                        final pickedDate = await selectDate(
+                          context: context,
+                          initialDate: _selectedDate, 
+                        );
                         if (pickedDate != null) {
                             setState(() {
                                 _selectedDate = pickedDate;

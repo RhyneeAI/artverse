@@ -86,11 +86,13 @@ class AuthTextField extends StatelessWidget {
 class AuthButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
+  final bool isDisabled; // <-- TAMBAH INI
 
   const AuthButton({
     super.key,
     required this.text,
     required this.onPressed,
+    this.isDisabled = false, // <-- default false
   });
 
   @override
@@ -101,7 +103,9 @@ class AuthButton extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          color: Theme.of(context).primaryColor,
+          color: isDisabled 
+              ? Colors.grey[400] // Warna abu jika disabled
+              : Theme.of(context).primaryColor,
         ),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
@@ -111,13 +115,13 @@ class AuthButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
           ),
-          onPressed: onPressed,
+          onPressed: isDisabled ? null : onPressed, // <-- disabled state
           child: Text(
             text,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,
-              color: Colors.white,
+              color: isDisabled ? Colors.grey[600] : Colors.white,
             ),
           ),
         ),

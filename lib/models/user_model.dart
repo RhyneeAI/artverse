@@ -15,7 +15,7 @@ class UserModel {
     this.profile_photo,
     this.birth_date,
     this.password,
-    this.is_validate = false,
+    this.is_validate = true, 
     this.validated_at,
   });
 }

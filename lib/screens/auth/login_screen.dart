@@ -43,6 +43,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       await _authController.login(email, password);
+      SnackbarHelper.showSuccess(context, 'Berhasil Login');
+
+      await Future.delayed(Duration(milliseconds: 772));
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => MainNavigation()),
@@ -92,6 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
               AuthTextField(
                 controller: _emailController,
                 hint: 'verona@artverse.com',
+                keyboardType: TextInputType.emailAddress,
               ),
         
               const SizedBox(height: 20),
@@ -124,6 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   if (_authController.isLoading) return;
                   _handleLogin();
                 },
+                isDisabled: _authController.isLoading,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
