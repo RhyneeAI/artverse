@@ -19,7 +19,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _rePasswordController = TextEditingController();
 
-  DateTime? _selectedDate;
+  DateTime? _selectedDate = DateTime(DateTime.now().year - 18);
   String? _selectedAvatar; 
   bool _isLoading = false;
   bool _obscurePassword = true;
@@ -215,6 +215,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         if (pickedDate != null) {
                             setState(() {
                                 _selectedDate = pickedDate;
+                                print(_selectedDate);
                                 _birthDateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
                             });
                         }

@@ -20,7 +20,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool _obscurePassword = true;
   bool _reObscurePassword = true;
-  DateTime? _selectedDate;
+  DateTime? _selectedDate = DateTime(DateTime.now().year);
   @override
   void dispose() {
     _dateController.dispose();
@@ -87,6 +87,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     if (pickedDate != null) {
                         setState(() {
                             _selectedDate = pickedDate;
+                            print(_selectedDate);
                             _dateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
                         });
                     }
