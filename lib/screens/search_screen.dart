@@ -1,6 +1,6 @@
-import 'package:artverse/screen/choosed_topic_screen.dart';
+import 'package:artverse/screens/choosed_topic_screen.dart';
 import 'package:flutter/material.dart';
-import '../widget/search_bar_widget.dart';
+import '../widgets/search_bar_widget.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});

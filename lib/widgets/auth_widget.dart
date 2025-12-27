@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:artverse/util/constants.dart';
+import 'package:artverse/utils/constants.dart';
 
 /// ================= LABEL =================
 class AuthLabel extends StatelessWidget {

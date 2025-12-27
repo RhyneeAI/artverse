@@ -1,4 +1,4 @@
-import 'package:artverse/widget/category_tab_section.dart';
+import 'package:artverse/widgets/category_tab_section.dart';
 import 'package:flutter/material.dart';
 
 class BookmarkScreen extends StatefulWidget {

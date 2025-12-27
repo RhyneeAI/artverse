@@ -1,6 +1,6 @@
-import 'package:artverse/screen/auth/login_screen.dart';
-import 'package:artverse/widget/auth_widget.dart';
-import 'package:artverse/util/date.dart';
+import 'package:artverse/screens/auth/login_screen.dart';
+import 'package:artverse/widgets/auth_widget.dart';
+import 'package:artverse/utils/date.dart';
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -13,8 +13,7 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final _fullNameController = TextEditingController();
   final _emailController = TextEditingController();
-  final _dateController = TextEditingController();
-  final _usernameController = TextEditingController();
+  final _birthDateController = TextEditingController();
   final _passwordController = TextEditingController();
   final _rePasswordController = TextEditingController();
 
@@ -23,7 +22,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   DateTime? _selectedDate = DateTime(DateTime.now().year);
   @override
   void dispose() {
-    _dateController.dispose();
+    _birthDateController.dispose();
     super.dispose();
   }
 
@@ -78,7 +77,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               AuthLabel(text: 'Date of Birth'),
               const SizedBox(height: 8),
               AuthTextField(
-                controller: _dateController,
+                controller: _birthDateController,
                 hint: 'DD/MM/YYYY',
                 readOnly: true,
                 obscure: false,
@@ -88,7 +87,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         setState(() {
                             _selectedDate = pickedDate;
                             print(_selectedDate);
-                            _dateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                            _birthDateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
                         });
                     }
                 },
@@ -96,15 +95,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 keyboardType: TextInputType.datetime,
               ),
 
-              const SizedBox(height: 20),
-        
-              AuthLabel(text: 'Username'),
-              const SizedBox(height: 8),
-              AuthTextField(
-                controller: _usernameController,
-                hint: 'vero',
-              ),
-        
               const SizedBox(height: 20),
 
               AuthLabel(text: 'Password'),

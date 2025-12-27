@@ -1,4 +1,4 @@
-import 'package:artverse/screen/news_detail_screen.dart';
+import 'package:artverse/screens/news_detail_screen.dart';
 import 'package:flutter/material.dart';
 import '../models/news_model.dart';
 

@@ -1,7 +1,7 @@
 import 'package:artverse/navigation/main_navigation.dart';
-import 'package:artverse/screen/auth/register_screen.dart';
+import 'package:artverse/screens/auth/register_screen.dart';
 import 'package:flutter/material.dart';
-import '../../widget/auth_widget.dart';
+import '../../widgets/auth_widget.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,7 +11,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   bool _obscurePassword = true;
@@ -38,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               // Subtitle
               Text(
-                'Enter your username and password to log in',
+                'Enter your email and password to log in',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.grey,
                 ),
@@ -46,11 +46,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
               const SizedBox(height: 32),
         
-              AuthLabel(text: 'Username'),
+              AuthLabel(text: 'Email'),
               const SizedBox(height: 8),
               AuthTextField(
-                controller: _usernameController,
-                hint: '',
+                controller: _emailController,
+                hint: 'verona@artverse.com',
               ),
         
               const SizedBox(height: 20),

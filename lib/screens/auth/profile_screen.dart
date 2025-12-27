@@ -1,7 +1,7 @@
-import 'package:artverse/util/constants.dart';
-import 'package:artverse/util/date.dart';
+import 'package:artverse/utils/constants.dart';
+import 'package:artverse/utils/date.dart';
 import 'package:flutter/material.dart';
-import '../../widget/auth_widget.dart';
+import '../../widgets/auth_widget.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -100,16 +100,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 30),
+                const SizedBox(height: 20),
 
-                const Text(
-                  'Profile',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    height: 1.2,
-                  ),
-                  textAlign: TextAlign.left,
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Profile',
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          height: 1.2,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        // Logout logic
+                      },
+                      icon: Icon(Icons.logout),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 32),
 
@@ -194,7 +205,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         children: [
                           Text('🇮🇩', style: TextStyle(fontSize: 24)),
                           SizedBox(width: 8),
-                          Text('+62', style: TextStyle(fontSize: 20)),
+                          Text('+62', style: TextStyle(fontSize: 15)),
                         ],
                       ),
                     ),
@@ -208,7 +219,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 8),
                 AuthTextField(
                     controller: _birthDateController,
-                    hint: '',
+                    hint: 'DD/MM/YYYY',
                     readOnly: true, 
                     onTap: () async {
                         final pickedDate = await selectDate(context: context);
@@ -232,7 +243,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 8),
                 AuthTextField(
                     controller: _passwordController,
-                    hint: '',
+                    hint: '******',
                     keyboardType: TextInputType.visiblePassword,
                     suffixIcon: IconButton(
                       icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
@@ -248,7 +259,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 8),
                 AuthTextField(
                     controller: _rePasswordController,
-                    hint: 'Re-enter password',
+                    hint: '******',
                     keyboardType: TextInputType.visiblePassword,
                     suffixIcon: IconButton(
                       icon: Icon(_obscureRePassword ? Icons.visibility_off : Icons.visibility),
@@ -265,7 +276,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onPressed: _isLoading ? null : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
-                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -274,7 +285,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ? const CircularProgressIndicator(color: Colors.white)
                         : const Text(
                             'Save',
-                            style: TextStyle(fontSize: 20, color: Colors.white),
+                            style: TextStyle(fontSize: 16, color: Colors.white),
                           ),
                   ),
                 ),

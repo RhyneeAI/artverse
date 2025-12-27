@@ -1,5 +1,5 @@
-import 'package:artverse/screen/splash_screen.dart';
-import 'package:artverse/util/theme.dart';
+import 'package:artverse/screens/splash_screen.dart';
+import 'package:artverse/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'ArtVerse',
       theme: AppTheme.lightTheme,
-      home: const SplashScreen(),
+      home: SplashScreen(),
       debugShowCheckedModeBanner: false,
     );
   }

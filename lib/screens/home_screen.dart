@@ -1,8 +1,8 @@
-import 'package:artverse/screen/choosed_topic_screen.dart';
-import 'package:artverse/screen/search_screen.dart';
-import 'package:artverse/widget/category_tab_section.dart';
-import 'package:artverse/widget/news_card_widget.dart';
-import 'package:artverse/widget/search_bar_widget.dart';
+import 'package:artverse/screens/choosed_topic_screen.dart';
+import 'package:artverse/screens/search_screen.dart';
+import 'package:artverse/widgets/category_tab_section.dart';
+import 'package:artverse/widgets/news_card_widget.dart';
+import 'package:artverse/widgets/search_bar_widget.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {

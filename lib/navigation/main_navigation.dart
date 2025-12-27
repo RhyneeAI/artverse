@@ -1,7 +1,7 @@
-import 'package:artverse/screen/bookmark_screen.dart';
-import 'package:artverse/screen/home_screen.dart';
-import 'package:artverse/screen/search_screen.dart';
-import 'package:artverse/screen/auth/profile_screen.dart';
+import 'package:artverse/screens/bookmark_screen.dart';
+import 'package:artverse/screens/home_screen.dart';
+import 'package:artverse/screens/search_screen.dart';
+import 'package:artverse/screens/auth/profile_screen.dart';
 import 'package:flutter/material.dart';
 // import '../screens/explore_screen.dart';
 // import '../screens/bookmark_screen.dart';
