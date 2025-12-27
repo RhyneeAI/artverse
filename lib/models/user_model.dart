@@ -2,7 +2,8 @@ class UserModel {
   final String? id;
   final String email;
   final String? full_name;
-  final String? profile_photo;
+  final String? phone;
+  final String? profile_image;
   final String? birth_date;
   final String? password;
   final bool is_validate;
@@ -12,7 +13,8 @@ class UserModel {
     this.id, 
     required this.email, 
     this.full_name,
-    this.profile_photo,
+    this.phone,
+    this.profile_image,
     this.birth_date,
     this.password,
     this.is_validate = true, 

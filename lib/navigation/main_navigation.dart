@@ -1,7 +1,7 @@
 import 'package:artverse/screens/bookmark_screen.dart';
 import 'package:artverse/screens/home_screen.dart';
-import 'package:artverse/screens/search_screen.dart';
 import 'package:artverse/screens/auth/profile_screen.dart';
+import 'package:artverse/screens/create_news.dart';
 import 'package:flutter/material.dart';
 // import '../screens/explore_screen.dart';
 // import '../screens/bookmark_screen.dart';
@@ -19,7 +19,7 @@ class _MainNavigationState extends State<MainNavigation> {
 
   final List<Widget> _pages = const [
     HomeScreen(),
-    SearchScreen(),
+    CreateNewsScreen(),
     BookmarkScreen(),
     ProfileScreen(),
   ];
@@ -51,8 +51,8 @@ class _MainNavigationState extends State<MainNavigation> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.explore_outlined),
-            activeIcon: Icon(Icons.explore),
+            icon: Icon(Icons.add_box_outlined),
+            activeIcon: Icon(Icons.add_box_rounded),
             label: 'Explore',
           ),
           BottomNavigationBarItem(

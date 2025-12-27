@@ -58,6 +58,7 @@ class AuthController {
         return UserModel(
           id: user.id,
           email: email,
+          password: password,
           full_name: fullName,
           birth_date: birthDate,
           is_validate: true,
@@ -71,5 +72,55 @@ class AuthController {
 
   Future<void> logout() async {
     await supabase.auth.signOut();
+  }
+
+  Future<UserModel?> getCurrentUser() async {
+    final user = supabase.auth.currentUser;
+    if (user == null) return null;
+    
+    final response = await supabase
+      .from('users')
+      .select()
+      .eq('id', user.id)
+      .single();
+    
+    return UserModel(
+      id: response['id'],
+      email: response['email'],
+      full_name: response['full_name'],
+      phone: response['phone'],
+      profile_image: response['profile_image'],
+      birth_date: response['birth_date'],
+      is_validate: response['is_validate'],
+      validated_at: response['validated_at'],
+    );
+  }
+
+  Future<void> updateUser({
+    required String userId,
+    required String fullName,
+    String? phone,
+    String? birthDate,
+    String? profileImage,
+  }) async {
+    isLoading = true;
+    try {
+      await supabase.from('users').update({
+        'full_name': fullName,
+        'phone': phone,
+        'birth_date': birthDate,
+        'profile_image': profileImage,
+        'updated_at': DateTime.now().toIso8601String(),
+      }).eq('id', userId);
+      
+      await supabase.auth.updateUser(
+        UserAttributes(data: {
+          'full_name': fullName,
+          'birth_date': birthDate,
+        }),
+      );
+    } finally {
+      isLoading = false;
+    }
   }
 }

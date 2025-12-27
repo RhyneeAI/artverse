@@ -40,11 +40,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     // Validation
     if (fullName.isEmpty) {
-      SnackbarHelper.showError(context, 'Full name is required'); return;
+      SnackbarHelper.showError(context, 'Full name cannot be null'); return;
     }
     
     if (email.isEmpty) {
-      SnackbarHelper.showError(context, 'Email is required'); return;
+      SnackbarHelper.showError(context, 'Email cannot be null'); return;
     }
 
     if (!email.contains('@')) {
@@ -52,19 +52,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
     
     if (password.isEmpty) {
-      SnackbarHelper.showError(context, 'Password is required'); return;
+      SnackbarHelper.showError(context, 'Password cannot be null'); return;
     }
     
     if (birthDate.isEmpty) {
-      SnackbarHelper.showError(context, 'Birth date is required'); return;
+      SnackbarHelper.showError(context, 'Birth date cannot be null'); return;
     }
     
     if (password.isEmpty) {
-      SnackbarHelper.showError(context, 'Password is required'); return;
+      SnackbarHelper.showError(context, 'Password cannot be null'); return;
     }
 
     if (rePassword.isEmpty) {
-      SnackbarHelper.showError(context, 'Re-Password is required'); return;
+      SnackbarHelper.showError(context, 'Re-Password cannot be null'); return;
     }
 
     if (password != rePassword) {
