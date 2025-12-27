@@ -1,5 +1,8 @@
 import 'package:artverse/utils/constants.dart';
+import 'package:artverse/utils/snackbar.dart';
 import 'package:artverse/utils/date.dart';
+import 'package:artverse/screens/auth/login_screen.dart';
+import 'package:artverse/controllers/auth_controller.dart';
 import 'package:flutter/material.dart';
 import '../../widgets/auth_widget.dart';
 
@@ -18,6 +21,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _rePasswordController = TextEditingController();
+
+  final AuthController _authController = AuthController();
 
   DateTime? _selectedDate = DateTime(DateTime.now().year - 18);
   String? _selectedAvatar; 
@@ -115,8 +120,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     IconButton(
-                      onPressed: () {
-                        // Logout logic
+                      onPressed: () async {
+                        final confirm = await SnackbarHelper.showConfirmationDialog(
+                          context: context,
+                          title: 'Konfirmasi Logout',
+                          message: 'Apakah anda yakin ingin logout?',
+                          confirmText: 'Logout',
+                        );
+                        if (confirm) {
+                          await _authController.logout();
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (_) => LoginScreen()),
+                            (route) => false, // Hapus semua route
+                          );
+                        }
                       },
                       icon: Icon(Icons.logout),
                     ),

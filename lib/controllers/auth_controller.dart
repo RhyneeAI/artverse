@@ -3,8 +3,10 @@ import 'package:artverse/models/user_model.dart';
 
 class AuthController {
   final supabase = Supabase.instance.client;
-
+  bool isLoading = false;
+  
   Future<UserModel?> login(String email, String password) async {
+    isLoading = true;
     try {
       final response = await supabase.auth.signInWithPassword(
         email: email,
@@ -20,19 +22,12 @@ class AuthController {
         );
       }
       return null;
-    } catch (e) {
-      rethrow;
+    } finally {
+      isLoading = false;
     }
   }
 
   Future<void> logout() async {
     await supabase.auth.signOut();
   }
-
-  // UserModel? getCurrentUserModel() {
-  //   final user = supabase.auth.currentUserModel;
-  //   return user != null 
-  //       ? UserModel(id: user.id, email: user.email!)
-  //       : null;
-  // }
 }
