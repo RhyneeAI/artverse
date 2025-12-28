@@ -7,6 +7,27 @@ class NewsController {
   final supabase = Supabase.instance.client;
   bool isLoading = false;
 
+  Future<void> incrementVisitCount(String newsId) async {
+    try {
+      final current = await supabase
+        .from('news')
+        .select('total_visit')
+        .eq('id', newsId)
+        .single();
+      
+      final currentVisit = current['total_visit'] ?? 0;
+      
+      // Increment
+      await supabase
+        .from('news')
+        .update({'total_visit': currentVisit + 1})
+        .eq('id', newsId);
+        
+    } catch (e) {
+      print('Error increment visit: $e');
+    }
+  }
+
   Future<void> createNews({
     required String title,
     required String description,

@@ -1,3 +1,4 @@
+import 'package:artverse/controllers/news_controller.dart';
 import 'package:artverse/models/news_model.dart';
 import 'package:artverse/screens/news_detail_screen.dart';
 import 'package:artverse/utils/categories_icon.dart';
@@ -8,7 +9,9 @@ import 'package:shimmer/shimmer.dart';
 class NewsCard extends StatelessWidget {
   final NewsModel? news;
   final bool isLoading;
-  const NewsCard({super.key, this.news, this.isLoading = false});
+  final NewsController _newsController = NewsController();
+
+  NewsCard({super.key, this.news, this.isLoading = false});
 
   bool isNew() {
      if (news!.createdAt == null) return false;
@@ -86,13 +89,14 @@ class NewsCard extends StatelessWidget {
     );
   }
 
-  @override
   Widget _buildNewsCard(BuildContext context) {
     return SizedBox(
       width: 250,
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () {
+        onTap: () async {
+          await _newsController.incrementVisitCount(news!.id.toString());
+          
           Navigator.push(
             context,
             MaterialPageRoute(
