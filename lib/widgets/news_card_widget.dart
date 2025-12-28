@@ -1,4 +1,5 @@
 import 'package:artverse/models/news_model.dart';
+import 'package:artverse/screens/news_detail_screen.dart';
 import 'package:artverse/utils/categories_icon.dart';
 import 'package:artverse/utils/date.dart';
 import 'package:flutter/material.dart';
@@ -91,11 +92,17 @@ class NewsCard extends StatelessWidget {
       width: 250,
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => NewsDetailScreen(news: news!),
+            ),
+          );
+        },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
             // 🖼️ Banner Image
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
@@ -135,7 +142,6 @@ class NewsCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-
                 // Author
                 Row(
                   children: [

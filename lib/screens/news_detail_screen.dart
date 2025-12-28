@@ -11,7 +11,6 @@ class NewsDetailScreen extends StatelessWidget {
   });
 
   @override
-  
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
@@ -37,43 +36,72 @@ class NewsDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
-                  // Category
-                  Text(
-                    news.category!.name.toString(),
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  // Title
-                  Text(
-                    news.title.toString(),
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // Source & time
-                  Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.unsubscribe_rounded, size: 12),
-                      const SizedBox(width: 8),
+                      // Category
                       Text(
-                        news.source.toString(),
-                        style: Theme.of(context).textTheme.bodySmall,
+                        news.category!.name.toString(),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                      const SizedBox(width: 12),
-                      const Icon(Icons.access_time,
-                          size: 14, color: Colors.grey),
-                      const SizedBox(width: 4),
+                      
+                      SizedBox(height: 8),
+                      
+                      // Title 
                       Text(
-                        (news.createdAt != null) ? DateUtilz.timeAgo(news.createdAt!) : '-',
-                        style: Theme.of(context).textTheme.bodySmall,
+                        news.title.toString(),
+                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                        maxLines: 3, 
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      
+                      SizedBox(height: 16),
+                      
+                      // Source
+                      Column(
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.source_rounded, size: 16),
+                              SizedBox(width: 8),
+                              Text(
+                                news.source.toString(),
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+
+                          // Author
+                          Row(
+                            children: [
+                              Icon(Icons.people_alt_rounded, size: 16),
+                              SizedBox(width: 8),
+                              Text(
+                                news.author!.full_name ?? "-",
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+
+                          // Time
+                          Row(
+                            children: [
+                              Icon(Icons.access_time, size: 16),
+                              SizedBox(width: 8),
+                              Text(
+                                DateUtilz.timeAgo(news.createdAt!),
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -82,10 +110,7 @@ class NewsDetailScreen extends StatelessWidget {
 
                   // Dummy content
                   Text(
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
-                    'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n\n'
-                    'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi '
-                    'ut aliquip ex ea commodo consequat.',
+                    news.description.toString(),
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],

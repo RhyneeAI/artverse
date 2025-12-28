@@ -10,7 +10,7 @@ class CategoryController {
       final response = await supabase
         .from('categories')
         .select('id, name')
-        .order('name');
+        .order('created_at');
       
       return response.map<CategoryModel>((item) {
         return CategoryModel(
