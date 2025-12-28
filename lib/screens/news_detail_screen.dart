@@ -22,7 +22,7 @@ class NewsDetailScreen extends StatelessWidget {
             leading: const BackButton(color: Colors.white),
             flexibleSpace: FlexibleSpaceBar(
               background: Image.asset(
-                news.image,
+                news.news_image,
                 fit: BoxFit.cover,
               ),
             ),
@@ -38,7 +38,7 @@ class NewsDetailScreen extends StatelessWidget {
 
                   // Category
                   Text(
-                    news.category,
+                    news.category_id.toString(),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
@@ -59,7 +59,7 @@ class NewsDetailScreen extends StatelessWidget {
                   // Source & time
                   Row(
                     children: [
-                      Image.asset(news.logo, width: 20),
+                      Icon(Icons.unsubscribe_rounded, size: 12),
                       const SizedBox(width: 8),
                       Text(
                         news.source,
@@ -70,7 +70,7 @@ class NewsDetailScreen extends StatelessWidget {
                           size: 14, color: Colors.grey),
                       const SizedBox(width: 4),
                       Text(
-                        news.timeAgo,
+                        news.created_at,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],

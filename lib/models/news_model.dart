@@ -1,17 +1,21 @@
 class NewsModel {
-  final String category;
+  final int category_id;
+  final int author_id;
   final String title;
+  final String description;
+  final String news_image;
   final String source;
-  final String timeAgo;
-  final String logo;
-  final String image;
+  final String total_visit;
+  String created_at;
 
   NewsModel({
-    required this.category,
+    required this.category_id,
+    required this.author_id,
     required this.title,
+    required this.description,
+    required this.news_image,
     required this.source,
-    required this.timeAgo,
-    required this.logo,
-    required this.image,
+    this.total_visit = '0',
+    this.created_at = ''
   });
 }

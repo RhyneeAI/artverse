@@ -35,7 +35,7 @@ class NewsListView extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Image.asset(
-                  news.image,
+                  news.news_image,
                   width: 90,
                   height: 90,
                   fit: BoxFit.cover,
@@ -47,7 +47,7 @@ class NewsListView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      news.category,
+                      news.category_id.toString(),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
@@ -64,7 +64,7 @@ class NewsListView extends StatelessWidget {
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        Image.asset(news.logo, width: 16),
+                        Icon(Icons.usb_rounded),
                         const SizedBox(width: 6),
                         Text(
                           news.source,
@@ -76,7 +76,7 @@ class NewsListView extends StatelessWidget {
                             size: 14, color: Colors.grey),
                         const SizedBox(width: 4),
                         Text(
-                          news.timeAgo,
+                          news.created_at,
                           style:
                               Theme.of(context).textTheme.bodySmall,
                         ),

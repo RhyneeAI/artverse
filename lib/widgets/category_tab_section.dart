@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../data/news_dummy.dart';
 import 'news_list_view.dart';
 
 class CategoryTabSection extends StatelessWidget {
@@ -37,11 +36,7 @@ class CategoryTabSection extends StatelessWidget {
             height: 400, // penting kalau di dalam Column
             child: TabBarView(
               children: [
-                NewsListView(newsList: dummyNews),
-                NewsListView(newsList: dummyNews),
-                NewsListView(newsList: dummyNews),
-                NewsListView(newsList: dummyNews),
-                NewsListView(newsList: dummyNews),
+               
               ],
             ),
           ),
