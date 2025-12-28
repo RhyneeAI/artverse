@@ -1,3 +1,4 @@
+import 'package:artverse/utils/date.dart';
 import 'package:flutter/material.dart';
 import '../models/news_model.dart';
 
@@ -10,6 +11,7 @@ class NewsDetailScreen extends StatelessWidget {
   });
 
   @override
+  
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
@@ -21,8 +23,8 @@ class NewsDetailScreen extends StatelessWidget {
             pinned: true,
             leading: const BackButton(color: Colors.white),
             flexibleSpace: FlexibleSpaceBar(
-              background: Image.asset(
-                news.news_image,
+              background: Image.network(
+                news.newsImageUrl.toString(),
                 fit: BoxFit.cover,
               ),
             ),
@@ -38,7 +40,7 @@ class NewsDetailScreen extends StatelessWidget {
 
                   // Category
                   Text(
-                    news.category_id.toString(),
+                    news.category!.name.toString(),
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
@@ -48,7 +50,7 @@ class NewsDetailScreen extends StatelessWidget {
 
                   // Title
                   Text(
-                    news.title,
+                    news.title.toString(),
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
@@ -62,7 +64,7 @@ class NewsDetailScreen extends StatelessWidget {
                       Icon(Icons.unsubscribe_rounded, size: 12),
                       const SizedBox(width: 8),
                       Text(
-                        news.source,
+                        news.source.toString(),
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                       const SizedBox(width: 12),
@@ -70,7 +72,7 @@ class NewsDetailScreen extends StatelessWidget {
                           size: 14, color: Colors.grey),
                       const SizedBox(width: 4),
                       Text(
-                        news.created_at,
+                        (news.createdAt != null) ? DateUtilz.timeAgo(news.createdAt!) : '-',
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],

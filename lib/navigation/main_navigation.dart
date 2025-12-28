@@ -53,7 +53,7 @@ class _MainNavigationState extends State<MainNavigation> {
           BottomNavigationBarItem(
             icon: Icon(Icons.add_box_outlined),
             activeIcon: Icon(Icons.add_box_rounded),
-            label: 'Explore',
+            label: 'Create',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.bookmark_outline),

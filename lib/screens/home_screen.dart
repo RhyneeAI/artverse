@@ -1,3 +1,7 @@
+import 'package:artverse/controllers/category_controller.dart';
+import 'package:artverse/controllers/news_controller.dart';
+import 'package:artverse/models/category_model.dart';
+import 'package:artverse/models/news_model.dart';
 import 'package:artverse/screens/choosed_topic_screen.dart';
 import 'package:artverse/screens/search_screen.dart';
 import 'package:artverse/widgets/category_tab_section.dart';
@@ -14,32 +18,39 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _searchController = TextEditingController();
-  final List<Map<String, String>> newsList = [
-  {
-    'category': 'Europe',
-    'title': 'Russian-Ukraine War: What to know about the conflict',
-    'source': 'BBC News',
-    'time': '2 hours ago',
-    'logo': 'assets/images/dummy/bbc.png',
-    'image': 'assets/images/dummy/news_head.png',
-  },
-  {
-    'category': 'Technology',
-    'title': 'AI is transforming digital art and creativity',
-    'source': 'CNN',
-    'time': '1 hour ago',
-    'logo': 'assets/images/dummy/bbc.png',
-    'image': 'assets/images/dummy/news_1.png',
-  },
-  {
-    'category': 'Science',
-    'title': 'NASA reveals new images from deep space',
-    'source': 'National Geographic',
-    'time': '30 min ago',
-    'logo': 'assets/images/dummy/bbc.png',
-    'image': 'assets/images/dummy/news_3.png',
-  },
-];
+  final _newsController = NewsController();
+  final _categoryController = CategoryController();
+
+  List<CategoryModel> _categories = [];
+  List<NewsModel> _allNews = [];
+  List<NewsModel> _popularNews = [];
+
+  bool _showSkeleton = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+
+    Future.delayed(Duration(milliseconds: 2000), () {
+      if (mounted) {
+        setState(() => _showSkeleton = false);
+      }
+    });
+  }
+
+  void _loadData() async {
+    final categories = await _categoryController.getCategories();
+    final newsData = await _newsController.getHomeNewsData();
+
+    print(newsData);
+    
+    setState(() {
+      _categories = categories;
+      _allNews = newsData['allNews'];
+      _popularNews = newsData['popularNews'];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,55 +61,54 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-            SearchBarWidget(
-              controller: _searchController,
-              readOnly: true,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const SearchScreen(),
-                  ),
-                );
-              },
-              onFilterTap: () async{
-              final result = await Navigator.push<Set<String>>(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const ChooseTopicsScreen(),
-                ),
-              );
+              SearchBarWidget(
+                controller: _searchController,
+                readOnly: true,
+                onTap: () {
+                  _loadData();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const SearchScreen(),
+                    ),
+                  );
+                },
+                onFilterTap: () async{
+                final result = await Navigator.push<Set<String>>(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const ChooseTopicsScreen(),
+                    ),
+                  );
 
-              if (result != null) {
-                print(result); // topic terpilih
-              }
-              },
-            ),
-            const SizedBox(height: 20),
+                  if (result != null) {
+                    print(result); // topic terpilih
+                  }
+                },
+              ),
+              const SizedBox(height: 20),
               SizedBox(
                 height: 270,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: newsList.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 24),
-                  itemBuilder: (context, index) {
-                    final news = newsList[index];
-                    return NewsCard(
-                      category: news['category'] ?? '',
-                      title: news['title'] ?? '',
-                      source: news['source'] ?? '',
-                      timeAgo: news['time'] ?? '',
-                      sourceLogo: news['logo'] ?? '',
-                      bannerImage: news['image'] ?? '',
-                      onTap: () {
-                        // TODO: open detail page
-                      },
-                    );
-                  },
-                ),
+                child: _showSkeleton || _newsController.isLoading
+                    ? ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: 3,
+                        separatorBuilder: (_, __) => const SizedBox(width: 24),
+                        itemBuilder: (_, __) => NewsCard(isLoading: true),
+                      )
+                    : ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _popularNews.length,
+                        separatorBuilder: (_, __) => const SizedBox(width: 24),
+                        itemBuilder: (_, index) => NewsCard(news: _popularNews[index]),
+                      ),
               ),
               const SizedBox(height: 24),
-              CategoryTabSection(),
+              CategoryTabSection(
+                categories: _categories,
+                allNews: _allNews,
+                isLoading: _newsController.isLoading || _showSkeleton,
+              ),
             ],
           ),
         )

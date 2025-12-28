@@ -1,34 +1,97 @@
+import 'package:artverse/models/news_model.dart';
+import 'package:artverse/utils/categories_icon.dart';
+import 'package:artverse/utils/date.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 class NewsCard extends StatelessWidget {
-  final String category;
-  final String title;
-  final String source;
-  final String timeAgo;
-  final String sourceLogo;
-  final String bannerImage;
-  final VoidCallback? onTap;
-  final double width;
+  final NewsModel? news;
+  final bool isLoading;
+  const NewsCard({super.key, this.news, this.isLoading = false});
 
-  const NewsCard({
-    super.key,
-    required this.category,
-    required this.title,
-    required this.source,
-    required this.timeAgo,
-    required this.sourceLogo,
-    required this.bannerImage,
-    this.onTap,
-    this.width = 320,
-  });
+  bool isNew() {
+     if (news!.createdAt == null) return false;
+      return DateTime.now().difference(news!.createdAt!).inDays <= 7;
+  }
+
+  String timeAgoOrEmpty(DateTime? date) {
+    if (date == null) return '';
+    return DateUtilz.timeAgo(date);
+  }
+
+  String limitText(String text, {int maxLength = 10}) {
+    if (text.length <= maxLength) return text;
+    return '${text.substring(0, maxLength)}...';
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading || news == null) {
+      return _buildSkeleton(context);
+    }
+    return _buildNewsCard(context);
+  }
+
+  Widget _buildSkeleton(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: SizedBox(
+        width: 250,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Skeleton image
+            Container(
+              height: 160,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 12),
+            // Skeleton category
+            Container(
+              width: 60,
+              height: 16,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 6),
+            // Skeleton title line 1
+            Container(
+              width: double.infinity,
+              height: 16,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 4),
+            // Skeleton title line 2
+            Container(
+              width: 150,
+              height: 16,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget _buildNewsCard(BuildContext context) {
     return SizedBox(
-      width: width,
+      width: 250,
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: onTap,
+        onTap: () {},
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -36,8 +99,8 @@ class NewsCard extends StatelessWidget {
             // 🖼️ Banner Image
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                bannerImage,
+              child: Image.network(
+                news!.newsImageUrl.toString(),
                 height: 160,
                 width: double.infinity,
                 fit: BoxFit.cover,
@@ -48,7 +111,7 @@ class NewsCard extends StatelessWidget {
 
             // 🏷️ Category
             Text(
-              category,
+              news!.category!.name.toString(),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
@@ -58,7 +121,7 @@ class NewsCard extends StatelessWidget {
 
             // 📰 Title
             Text(
-              title,
+              news!.title.toString(),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -68,22 +131,20 @@ class NewsCard extends StatelessWidget {
 
             const SizedBox(height: 10),
 
-            // 🧾 Source & Time
+            // 🧾 Author & Time
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
 
-                // Source
+                // Author
                 Row(
                   children: [
-                    Image.asset(
-                      sourceLogo,
-                      width: 20,
-                      height: 20,
-                    ),
+                    Icon(isNew() ? Icons.new_releases_outlined : Icons.line_style_rounded),
+                    const SizedBox(width: 8),
+                    Icon(CategoryUtils.getIcon(news!.category!.icon.toString())),
                     const SizedBox(width: 8),
                     Text(
-                      source,
+                      limitText(news!.source.toString(), maxLength: 11),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Colors.black,
                         fontWeight: FontWeight.w600,
@@ -102,7 +163,7 @@ class NewsCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      timeAgo,
+                      timeAgoOrEmpty(news!.createdAt),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Colors.grey,
                       ),

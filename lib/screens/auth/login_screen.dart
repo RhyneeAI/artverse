@@ -23,17 +23,17 @@ class _LoginScreenState extends State<LoginScreen> {
     String password = _passwordController.text.trim();
 
     if(email.isEmpty) {
-      SnackbarHelper.showInfo(context, 'Email cannot be empty');
+      SnackbarUtils.showInfo(context, 'Email cannot be empty');
       return;
     }
 
     if(!email.contains('@')) {
-      SnackbarHelper.showInfo(context, 'Incorrect Email format');
+      SnackbarUtils.showInfo(context, 'Incorrect Email format');
       return;
     }
 
     if(password.isEmpty) {
-      SnackbarHelper.showInfo(context, 'Password cannot be empty');
+      SnackbarUtils.showInfo(context, 'Password cannot be empty');
       return;
     }
 
@@ -43,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       await _authController.login(email, password);
-      SnackbarHelper.showSuccess(context, 'Berhasil Login');
+      SnackbarUtils.showSuccess(context, 'Berhasil Login');
 
       await Future.delayed(Duration(milliseconds: 772));
 
@@ -52,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
         MaterialPageRoute(builder: (_) => MainNavigation()),
       );
     } catch (e) {
-      SnackbarHelper.showError(context, 'Incorrect username or password');
+      SnackbarUtils.showError(context, 'Incorrect username or password');
       print(e.toString());
     } finally {
       setState(() {

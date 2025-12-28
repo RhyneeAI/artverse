@@ -1,7 +1,7 @@
 import 'package:artverse/controllers/auth_controller.dart';
 import 'package:artverse/screens/auth/login_screen.dart';
-import 'package:artverse/v1/utils/snackbar.dart';
 import 'package:artverse/widgets/auth_widget.dart';
+import 'package:artverse/utils/snackbar.dart';
 import 'package:artverse/utils/date.dart';
 import 'package:flutter/material.dart';
 
@@ -40,40 +40,40 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     // Validation
     if (fullName.isEmpty) {
-      SnackbarHelper.showError(context, 'Full name cannot be null'); return;
+      SnackbarUtils.showError(context, 'Full name cannot be null'); return;
     }
     
     if (email.isEmpty) {
-      SnackbarHelper.showError(context, 'Email cannot be null'); return;
+      SnackbarUtils.showError(context, 'Email cannot be null'); return;
     }
 
     if (!email.contains('@')) {
-      SnackbarHelper.showError(context, 'Incorrect Email format'); return;
+      SnackbarUtils.showError(context, 'Incorrect Email format'); return;
     }
     
     if (password.isEmpty) {
-      SnackbarHelper.showError(context, 'Password cannot be null'); return;
+      SnackbarUtils.showError(context, 'Password cannot be null'); return;
     }
     
     if (birthDate.isEmpty) {
-      SnackbarHelper.showError(context, 'Birth date cannot be null'); return;
+      SnackbarUtils.showError(context, 'Birth date cannot be null'); return;
     }
     
     if (password.isEmpty) {
-      SnackbarHelper.showError(context, 'Password cannot be null'); return;
+      SnackbarUtils.showError(context, 'Password cannot be null'); return;
     }
 
     if (rePassword.isEmpty) {
-      SnackbarHelper.showError(context, 'Re-Password cannot be null'); return;
+      SnackbarUtils.showError(context, 'Re-Password cannot be null'); return;
     }
 
     if (password != rePassword) {
-      SnackbarHelper.showError(context, 'Passwords do not match');
+      SnackbarUtils.showError(context, 'Passwords do not match');
       return;
     }
 
     if (_passwordController.text.length < 6) {
-      SnackbarHelper.showError(context, 'Password min 6 characters');
+      SnackbarUtils.showError(context, 'Password min 6 characters');
       return;
     }
 
@@ -89,13 +89,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
             : null,
       );
 
-      SnackbarHelper.showSuccess(context, 'Registration successful!');
+      SnackbarUtils.showSuccess(context, 'Registration successful!');
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => LoginScreen()),
       );
     } catch (e) {
-      SnackbarHelper.showError(context, 'Registration failed!');
+      SnackbarUtils.showError(context, 'Registration failed!');
       print(e.toString());
     } finally {
       setState(() => _authController.isLoading = false);
@@ -158,14 +158,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 readOnly: true,
                 obscure: false,
                 onTap: () async {
-                  final pickedDate = await selectDate(
+                  final pickedDate = await DateUtilz.selectDate(
                     context: context,
-                    initialDate: _selectedDate, 
+                    initialDate: _selectedDate,
                   );
                   if (pickedDate != null) {
                     setState(() {
                       _selectedDate = pickedDate;
-                      _birthDateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+                      _birthDateController.text = 
+                          "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
                     });
                   }
                 },

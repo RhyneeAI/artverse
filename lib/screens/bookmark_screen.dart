@@ -24,7 +24,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
           children: [
             SizedBox(
               height: 500,
-              child: CategoryTabSection()),
+              child: Placeholder()),
           ],
         ),
       ),

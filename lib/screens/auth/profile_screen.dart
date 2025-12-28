@@ -100,7 +100,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _updateProfile() async {
     if (_fullNameController.text.isEmpty) {
-      SnackbarHelper.showError(context, 'Full name is required');
+      SnackbarUtils.showError(context, 'Full name is required');
       return;
     }
 
@@ -115,11 +115,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       print("asdasd{$phone}");
 
       if(fullName.isEmpty) {
-        SnackbarHelper.showError(context, 'Full name cannot be null'); return;
+        SnackbarUtils.showError(context, 'Full name cannot be null'); return;
       }
       
       if(phone.isNotEmpty && phone.length < 10) {
-        SnackbarHelper.showError(context, 'Minimum 10 digits phone number'); return;
+        SnackbarUtils.showError(context, 'Minimum 10 digits phone number'); return;
       }
       
       await _authController.updateUser(
@@ -132,9 +132,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         profileImage: _selectedAvatar,
       );
      
-      SnackbarHelper.showSuccess(context, 'Profile updated successfully');
+      SnackbarUtils.showSuccess(context, 'Profile updated successfully');
     } catch (e) {
-      SnackbarHelper.showError(context, 'Update failed: $e');
+      SnackbarUtils.showError(context, 'Update failed: $e');
     } finally {
       setState(() => _authController.isLoading = false);
     }
@@ -201,7 +201,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         IconButton(
                           onPressed: () async {
-                            final confirm = await SnackbarHelper.showConfirmationDialog(
+                            final confirm = await SnackbarUtils.showConfirmationDialog(
                               context: context,
                               title: 'Konfirmasi Logout',
                               message: 'Apakah anda yakin ingin logout?',
@@ -209,7 +209,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             );
                             if (confirm) {
                               await _authController.logout();
-                              SnackbarHelper.showSuccess(context, 'Berhasil Logout');
+                              SnackbarUtils.showSuccess(context, 'Berhasil Logout');
 
                               await Future.delayed(Duration(milliseconds: 772));
 
@@ -324,7 +324,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         hint: 'DD/MM/YYYY',
                         readOnly: true, 
                         onTap: () async {
-                            final pickedDate = await selectDate(
+                            final pickedDate = await DateUtilz.selectDate(
                               context: context,
                               initialDate: _selectedDate, 
                             );

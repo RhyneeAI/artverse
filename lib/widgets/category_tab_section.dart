@@ -1,46 +1,74 @@
+import 'package:artverse/models/category_model.dart';
+import 'package:artverse/models/news_model.dart';
+import 'package:artverse/widgets/news_list_view.dart';
 import 'package:flutter/material.dart';
-import 'news_list_view.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CategoryTabSection extends StatelessWidget {
-  const CategoryTabSection({super.key});
+  final List<CategoryModel> categories;
+  final List<NewsModel> allNews;
+  final bool isLoading;
+  
+  const CategoryTabSection({
+    super.key,
+    required this.categories,
+    required this.allNews,
+    required this.isLoading
+  });
 
   @override
   Widget build(BuildContext context) {
+    final showSkeleton = isLoading;
+    
+    final allTabs = showSkeleton
+        ? [
+            Tab(child: _buildSkeletonTab()),
+            Tab(child: _buildSkeletonTab()),
+            Tab(child: _buildSkeletonTab()),
+          ]
+        : [
+            Tab(text: 'All'),
+            ...categories.map((cat) => Tab(text: cat.name ?? '')),
+          ];
+
     return DefaultTabController(
-      length: 5,
+      length: allTabs.length,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
-          // 🏷️ TAB BAR
-          const TabBar(
-            tabAlignment: TabAlignment.start,
-            dividerHeight: 0,
-            isScrollable: true,
-            unselectedLabelColor: Colors.grey,
-            indicatorColor: Colors.blue,
-            
-            tabs: [
-              Tab(text: 'All'),
-              Tab(text: 'Digital'),
-              Tab(text: 'Painting'),
-              Tab(text: 'Sculpture'),
-              Tab(text: 'Photography'),
-            ],
-          ),
-
-          const SizedBox(height: 8),
-
-          // 📃 TAB CONTENT
+          TabBar(isScrollable: true, tabs: allTabs),
+          
           SizedBox(
-            height: 400, // penting kalau di dalam Column
+            height: 400,
             child: TabBarView(
-              children: [
-               
-              ],
+              children: showSkeleton
+                  ? List.generate(allTabs.length, (_) => NewsListView(isLoading: true))
+                  : [
+                      NewsListView(newsList: allNews),
+                      ...categories.map((category) {
+                        final filteredNews = allNews.where(
+                          (news) => news.category!.id == category.id
+                        ).toList();
+                        return NewsListView(newsList: filteredNews);
+                      }).toList(),
+                    ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSkeletonTab() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Container(
+        width: 80,
+        height: 20,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          color: Colors.white,
+        ),
       ),
     );
   }

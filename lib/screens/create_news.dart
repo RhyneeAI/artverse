@@ -52,13 +52,13 @@ class _CreateNewsScreenState extends State<CreateNewsScreen> {
         _descriptionController.document.toPlainText().isEmpty ||
         _newsImage == null ||
         _categoryId == null) {
-      SnackbarHelper.showError(context, 'Harap lengkapi semua field');
+      SnackbarUtils.showError(context, 'Harap lengkapi semua field');
       return;
     }
 
     final user = await _authController.getCurrentUser();
     if (user == null) {
-      SnackbarHelper.showError(context, 'User tidak ditemukan');
+      SnackbarUtils.showError(context, 'User tidak ditemukan');
       return;
     }
 
@@ -78,13 +78,13 @@ class _CreateNewsScreenState extends State<CreateNewsScreen> {
         authorId: user.id!,
       );
 
-      SnackbarHelper.showSuccess(context, 'News successfully published');
+      SnackbarUtils.showSuccess(context, 'News successfully published');
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => MainNavigation()),
       );
     } catch (e) {
-      SnackbarHelper.showError(context, 'Gagal: $e');
+      SnackbarUtils.showError(context, 'Gagal: $e');
     } finally {
       setState(() => _newsController.isLoading = false);
     }
@@ -104,7 +104,7 @@ class _CreateNewsScreenState extends State<CreateNewsScreen> {
     final categories = await _categoryController.getCategories();
 
     if(categories.isEmpty) {
-      SnackbarHelper.showError(context, 'Failed to fetch categories data');
+      SnackbarUtils.showError(context, 'Failed to fetch categories data');
     }
     
     setState(() {
