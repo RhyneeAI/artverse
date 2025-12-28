@@ -1,4 +1,8 @@
+import 'package:artverse/controllers/news_controller.dart';
+import 'package:artverse/models/news_model.dart';
 import 'package:artverse/screens/choosed_topic_screen.dart';
+import 'package:artverse/screens/news_detail_screen.dart';
+import 'package:artverse/utils/search_history.dart';
 import 'package:flutter/material.dart';
 import '../widgets/search_bar_widget.dart';
 
@@ -11,37 +15,32 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
-
-  final List<String> recentSearches = [
-    'Technology',
-    'Art',
-    'Science',
-    'Painting',
-  ];
-
-  final List<String> results = [];
+  final NewsController _newsController = NewsController();
+  
+  List<NewsModel> _searchResults = [];
+  List<String> _recentSearches = [];
+  bool _isSearching = false;
 
   @override
   void initState() {
     super.initState();
-    // Auto focus ketika masuk
-    Future.delayed(Duration.zero, () {
-      FocusScope.of(context).requestFocus(FocusNode());
-    });
+    _loadHistory();
   }
 
-  void _onSearch(String query) {
-    // 🔍 Simulasi search
+  void _loadHistory() async {
+    final history = await SearchHistoryUtils.getHistory();
+    setState(() => _recentSearches = history);
+  }
+
+  void _onSearch(String query) async {
+    if (query.trim().isEmpty) return;
+    
+    setState(() => _isSearching = true);
+    final results = await _newsController.searchNews(query);
+    
     setState(() {
-      results.clear();
-      if (query.isNotEmpty) {
-        results.addAll(
-          List.generate(
-            5,
-            (index) => '$query result ${index + 1}',
-          ),
-        );
-      }
+      _searchResults = results;
+      _isSearching = false;
     });
   }
 
@@ -49,35 +48,28 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const BackButton(),
-        title: const Text('Search'),
+        leading: BackButton(),
+        title: Text('Search'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-
-            // 🔍 SEARCH BAR
             SearchBarWidget(
               controller: _searchController,
-              onChanged: _onSearch,
-              onFilterTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const ChooseTopicsScreen(),
-                  ),
-                );
+              onChanged: (query) {
+                _onSearch(query);
               },
             ),
-
+            
             const SizedBox(height: 20),
-
-            // 🧠 CONTENT
+            
             Expanded(
               child: _searchController.text.isEmpty
                   ? _buildRecentSearch()
-                  : _buildResults(),
+                  : _isSearching
+                      ? Center(child: CircularProgressIndicator())
+                      : _buildResults(),
             ),
           ],
         ),
@@ -85,20 +77,31 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  // ================= RECENT SEARCH =================
-
   Widget _buildRecentSearch() {
+    if (_recentSearches.isEmpty) {
+      return Center(child: Text('No recent searches'));
+    }
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Recent searches',
-          style: TextStyle(fontWeight: FontWeight.w600),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Recent searches', style: TextStyle(fontWeight: FontWeight.w600)),
+            TextButton(
+              onPressed: () async {
+                await SearchHistoryUtils.clearHistory();
+                _loadHistory();
+              },
+              child: Text('Clear', style: TextStyle(color: Colors.red)),
+            ),
+          ],
         ),
         const SizedBox(height: 12),
         Wrap(
           spacing: 8,
-          children: recentSearches.map((item) {
+          children: _recentSearches.map((item) {
             return ActionChip(
               label: Text(item),
               onPressed: () {
@@ -112,17 +115,30 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  // ================= SEARCH RESULT =================
-
   Widget _buildResults() {
+    if (_searchResults.isEmpty) {
+      return Center(child: Text('No results found'));
+    }
+    
     return ListView.separated(
-      itemCount: results.length,
+      itemCount: _searchResults.length,
       separatorBuilder: (_, __) => const Divider(),
       itemBuilder: (context, index) {
+        final news = _searchResults[index];
         return ListTile(
-          title: Text(results[index]),
-          onTap: () {
-            // TODO: open detail
+          leading: Image.network(news.newsImageUrl.toString()),
+          title: Text(news.title.toString()),
+          subtitle: Text(news.category!.name.toString()),
+          onTap: () async {
+            await SearchHistoryUtils.addSearch(_searchController.text.trim());
+            _loadHistory();
+            
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => NewsDetailScreen(news: news),
+              ),
+            );
           },
         );
       },

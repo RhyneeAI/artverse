@@ -7,6 +7,26 @@ class NewsController {
   final supabase = Supabase.instance.client;
   bool isLoading = false;
 
+  Future<List<NewsModel>> searchNews(String query) async {
+    try {
+      final response = await supabase
+          .from('news')
+          .select('''
+            *,
+            news_image:news_image_id(image_url, image_name),
+            category:category_id(id, name, icon),
+            users:author_id(id, email, full_name)
+          ''')
+          .or('title.ilike.%$query%,description.ilike.%$query%')
+          .order('created_at', ascending: false);
+      
+      return response.map<NewsModel>((item) => NewsModel.fromJson(item)).toList();
+    } catch (e) {
+      print('Search error: $e');
+      return [];
+    }
+  }
+
   Future<void> incrementVisitCount(String newsId) async {
     try {
       final current = await supabase
