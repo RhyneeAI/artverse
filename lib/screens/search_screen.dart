@@ -1,6 +1,6 @@
 import 'package:artverse/controllers/news_controller.dart';
 import 'package:artverse/models/news_model.dart';
-import 'package:artverse/screens/choosed_topic_screen.dart';
+// import 'package:artverse/screens/choosed_topic_screen.dart';
 import 'package:artverse/screens/news_detail_screen.dart';
 import 'package:artverse/utils/search_history.dart';
 import 'package:flutter/material.dart';
