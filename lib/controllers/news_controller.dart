@@ -119,6 +119,7 @@ class NewsController {
             *,
             news_image:news_image_id(image_url, image_name),
             category:category_id(id, name, icon),
+            users:author_id(id, email, full_name),
             bookmarks:bookmarks(count)
           ''')
           .eq('bookmarks.user_id', user!.id)
@@ -140,7 +141,7 @@ class NewsController {
 
       return {
         'allNews': allNewsList,
-        'popularNews': popularNews.take(4).toList(),
+        'popularNews': popularNews.take(3).toList(),
       };
     } catch (e) {
       print('Get home data error: $e');

@@ -53,6 +53,12 @@ class _NewsCardState extends State<NewsCard> {
         user!.id!, 
       );
       
+      if(newState) {
+        SnackbarUtils.showSuccess(context, "Added to Bookmark");
+      } else {
+        SnackbarUtils.showInfo(context, "Removed from Bookmark");
+      }
+      
       setState(() {
         _isBookmarked = newState;
         _isAnimating = false;

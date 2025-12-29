@@ -27,7 +27,12 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
     _loadBookmarks();
   }
 
-  void _loadBookmarks() async {
+  Future<void> _loadBookmarks() async {
+    setState(() {
+      _categories = [];
+      _bookmarkedNews = [];
+    });
+
     final user = await _authController.getCurrentUser();
     if (user?.id == null) return;
     
@@ -45,26 +50,53 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Bookmarks')),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: SingleChildScrollView(
-            child: RefreshIndicator(
-              onRefresh: () async => _loadBookmarks,
-              child: _isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : _bookmarkedNews.isEmpty
-                      ? SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.8,
-                          child: Center(child: Text('No bookmarks yet')),
-                        )
-                      : CategoryTabSection(
-                          categories: _categories,
-                          allNews: _bookmarkedNews,
-                          isLoading: false,
-                          onBookmarkChanged: _loadBookmarks,
+        child: RefreshIndicator(
+          onRefresh: () async { await _loadBookmarks(); },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: CustomScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 0),
+                  sliver: SliverToBoxAdapter(
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 26),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Bookmarks',
+                                style: TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                  height: 1.2,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
+                        const SizedBox(height: 24),
+                      ],
+                    ),
+                  ),
+                ),
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: _isLoading
+                      ? Center(child: CircularProgressIndicator())
+                      : _bookmarkedNews.isEmpty
+                          ? Center(child: Text('No bookmarks yet'))
+                          : CategoryTabSection(
+                              categories: _categories,
+                              allNews: _bookmarkedNews,
+                              isLoading: false,
+                              onBookmarkChanged: _loadBookmarks,
+                            ),
+                )
+              ]
             )
           )
         )

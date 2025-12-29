@@ -137,7 +137,7 @@ class _CreateNewsScreenState extends State<CreateNewsScreen> {
                         child: Text(
                           'Create News',
                           style: TextStyle(
-                            fontSize: 28,
+                            fontSize: 27,
                             fontWeight: FontWeight.bold,
                             height: 1.2,
                           ),

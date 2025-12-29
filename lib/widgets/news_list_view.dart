@@ -36,7 +36,7 @@ class _NewsListViewState extends State<NewsListView> {
     super.initState();
   }
 
-  Future<void> _toggleBookmark(NewsModel news) async {
+  Future<void> _toggleBookmark(NewsModel news, int index) async {
     if (news.id == null) return;
     
     setState(() => _animatingStates[news.id!] = true);
@@ -48,15 +48,43 @@ class _NewsListViewState extends State<NewsListView> {
         return;
       }
       
-      await _bookmarkController.addBookmark(
+      // Toggle bookmark
+      final newState = await _bookmarkController.addBookmark(
         news.id!,
         user!.id!,
       );
-      
+
+      // UPDATE STATE BOOKMARK
       setState(() {
         _animatingStates[news.id!] = false;
+        
+        // Update isBookmarked status di newsList
+        if (widget.newsList != null) {
+          final newsIndex = widget.newsList!.indexWhere((n) => n.id == news.id);
+          if (newsIndex != -1) {
+            // Buat news baru dengan isBookmarked yang diupdate
+            widget.newsList![newsIndex] = NewsModel(
+              id: widget.newsList![newsIndex].id,
+              title: widget.newsList![newsIndex].title,
+              description: widget.newsList![newsIndex].description,
+              source: widget.newsList![newsIndex].source,
+              newsImageUrl: widget.newsList![newsIndex].newsImageUrl,
+              totalVisit: widget.newsList![newsIndex].totalVisit,
+              createdAt: widget.newsList![newsIndex].createdAt,
+              category: widget.newsList![newsIndex].category,
+              author: widget.newsList![newsIndex].author,
+              isBookmarked: newState, // ← HANYA INI YANG DIUPDATE
+            );
+          }
+        }
       });
 
+      if(newState) {
+        SnackbarUtils.showSuccess(context, "Added to Bookmark");
+      } else {
+        SnackbarUtils.showInfo(context, "Removed from Bookmark");
+      }
+      
       widget.onBookmarkChanged?.call();
     } catch (e) {
       setState(() => _animatingStates[news.id!] = false);
@@ -87,7 +115,7 @@ class _NewsListViewState extends State<NewsListView> {
         // print("isbookmarked: ${isBookmarked}");
         // print("isbookmarked: ${widget.newsList!.length}");
         
-        return _buildNewsItem(context, news, isBookmarked, isAnimating);
+        return _buildNewsItem(context, news, isBookmarked, isAnimating, index);
       }
     );
   }
@@ -193,7 +221,7 @@ class _NewsListViewState extends State<NewsListView> {
     );
   }
 
-  Widget _buildNewsItem(BuildContext context, NewsModel news, bool isBookmarked, bool isAnimating) {
+  Widget _buildNewsItem(BuildContext context, NewsModel news, bool isBookmarked, bool isAnimating, int index) {
     final isNew = news.createdAt != null 
         ? DateTime.now().difference(news.createdAt!).inDays <= 7
         : false;
@@ -231,7 +259,7 @@ class _NewsListViewState extends State<NewsListView> {
                 top: 4,
                 right: 4,
                 child: GestureDetector(
-                  onTap: () => _toggleBookmark(news),
+                  onTap: () => _toggleBookmark(news, index),
                   child: AnimatedContainer(
                     duration: Duration(milliseconds: 200),
                     child: isAnimating
