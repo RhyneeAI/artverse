@@ -8,12 +8,14 @@ class CategoryTabSection extends StatelessWidget {
   final List<CategoryModel> categories;
   final List<NewsModel> allNews;
   final bool isLoading;
+  final VoidCallback? onBookmarkChanged;
   
   const CategoryTabSection({
     super.key,
     required this.categories,
     required this.allNews,
-    required this.isLoading
+    required this.isLoading,
+    this.onBookmarkChanged
   });
 
   @override
@@ -43,12 +45,18 @@ class CategoryTabSection extends StatelessWidget {
               children: showSkeleton
                   ? List.generate(allTabs.length, (_) => NewsListView(isLoading: true))
                   : [
-                      NewsListView(newsList: allNews),
+                      NewsListView(
+                        newsList: allNews,
+                        onBookmarkChanged: onBookmarkChanged,
+                      ),
                       ...categories.map((category) {
                         final filteredNews = allNews.where(
                           (news) => news.category!.id == category.id
                         ).toList();
-                        return NewsListView(newsList: filteredNews);
+                        return NewsListView(
+                          newsList: filteredNews,
+                          onBookmarkChanged: onBookmarkChanged,
+                        );
                       }).toList(),
                     ],
             ),

@@ -15,12 +15,17 @@ class BookmarkController {
           .eq('user_id', userId)
           .maybeSingle();
 
+      // print("newsId ${newsId}");
+      // print("userId ${userId}");
+      // print("existing ${existing}");
+
       if (existing != null) {
         await supabase
             .from('bookmarks')
             .delete()
             .eq('news_id', newsId)
             .eq('user_id', userId);
+            // print("result: ${result}");
         return false;
       } else {
         await supabase.from('bookmarks').insert({
@@ -46,7 +51,8 @@ class BookmarkController {
               *,
               news_image:news_image_id(image_url, image_name),
               category:category_id(id, name, icon),
-              author:author_id(id, email, full_name)
+              author:author_id(id, email, full_name),
+              bookmarks:bookmarks(count)
             )
           ''')
           .eq('user_id', userId)

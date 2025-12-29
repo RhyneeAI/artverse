@@ -12,11 +12,13 @@ import 'package:shimmer/shimmer.dart';
 class NewsListView extends StatefulWidget {
   final List<NewsModel>? newsList;
   final bool isLoading;
+  final VoidCallback? onBookmarkChanged;
   
   const NewsListView({
     super.key,
     this.newsList,
     this.isLoading = false,
+    this.onBookmarkChanged,
   });
 
   @override
@@ -27,18 +29,11 @@ class _NewsListViewState extends State<NewsListView> {
   final BookmarkController _bookmarkController = BookmarkController();
   final AuthController _authController = AuthController();
 
-  final Map<String, bool> _bookmarkStates = {};
   final Map<String, bool> _animatingStates = {};
 
   @override
   void initState() {
     super.initState();
-    // Initialize states dari data awal
-    if (widget.newsList != null) {
-      for (var news in widget.newsList!) {
-        _bookmarkStates[news.id!] = news.isBookmarked ?? false;
-      }
-    }
   }
 
   Future<void> _toggleBookmark(NewsModel news) async {
@@ -53,15 +48,16 @@ class _NewsListViewState extends State<NewsListView> {
         return;
       }
       
-      final newState = await _bookmarkController.addBookmark(
+      await _bookmarkController.addBookmark(
         news.id!,
         user!.id!,
       );
       
       setState(() {
-        _bookmarkStates[news.id!] = newState;
         _animatingStates[news.id!] = false;
       });
+
+      widget.onBookmarkChanged?.call();
     } catch (e) {
       setState(() => _animatingStates[news.id!] = false);
       SnackbarUtils.showError(context, 'Failed: $e');
@@ -85,8 +81,11 @@ class _NewsListViewState extends State<NewsListView> {
         }
 
         final news = widget.newsList![index];
-        final isBookmarked = _bookmarkStates[news.id!] ?? false;
+        final isBookmarked = news.isBookmarked ?? false;
         final isAnimating = _animatingStates[news.id!] ?? false;
+
+        print("isbookmarked: ${isBookmarked}");
+        print("isbookmarked: ${widget.newsList!.length}");
         
         return _buildNewsItem(context, news, isBookmarked, isAnimating);
       }

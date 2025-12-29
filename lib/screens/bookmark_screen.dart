@@ -55,11 +55,15 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
               child: _isLoading
                   ? Center(child: CircularProgressIndicator())
                   : _bookmarkedNews.isEmpty
-                      ? Center(child: Text('No bookmarks yet'))
+                      ? SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.8,
+                          child: Center(child: Text('No bookmarks yet')),
+                        )
                       : CategoryTabSection(
                           categories: _categories,
                           allNews: _bookmarkedNews,
                           isLoading: false,
+                          onBookmarkChanged: _loadBookmarks,
                         ),
             )
           )
