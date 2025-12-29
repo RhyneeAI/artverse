@@ -1,5 +1,6 @@
 import 'package:artverse/controllers/auth_controller.dart';
 import 'package:artverse/controllers/bookmark_controller.dart';
+import 'package:artverse/controllers/news_controller.dart';
 import 'package:artverse/screens/news_detail_screen.dart';
 import 'package:artverse/utils/categories_icon.dart';
 import 'package:artverse/utils/date.dart';
@@ -28,6 +29,7 @@ class NewsListView extends StatefulWidget {
 class _NewsListViewState extends State<NewsListView> {
   final BookmarkController _bookmarkController = BookmarkController();
   final AuthController _authController = AuthController();
+  final NewsController _newsController = NewsController();
 
   final Map<String, bool> _animatingStates = {};
 
@@ -232,7 +234,9 @@ class _NewsListViewState extends State<NewsListView> {
     }
 
     return InkWell(
-      onTap: () {
+      onTap: () async {
+        await _newsController.incrementVisitCount(news.id.toString());
+
         Navigator.push(
           context,
           MaterialPageRoute(

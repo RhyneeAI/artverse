@@ -28,7 +28,7 @@ class NewsController {
     }
   }
 
-  Future<void> incrementVisitCount(String newsId) async {
+  Future<int> incrementVisitCount(String newsId) async {
     try {
       final current = await supabase
         .from('news')
@@ -40,12 +40,14 @@ class NewsController {
       
       // Increment
       await supabase
-        .from('news')
-        .update({'total_visit': currentVisit + 1})
-        .eq('id', newsId);
-        
+          .from('news')
+          .update({'total_visit': currentVisit + 1})
+          .eq('id', newsId);
+          
+      return currentVisit + 1; 
     } catch (e) {
       print('Error increment visit: $e');
+      rethrow; 
     }
   }
 
