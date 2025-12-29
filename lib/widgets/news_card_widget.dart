@@ -9,7 +9,6 @@ import 'package:artverse/utils/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-
 class NewsCard extends StatefulWidget {
   final NewsModel? news;
   final bool isLoading;
@@ -184,6 +183,7 @@ class _NewsCardState extends State<NewsCard> {
                                   ? Icons.bookmark 
                                   : Icons.bookmark_border,
                               color: Colors.white,
+                              size: 30,
                             ),
                     ),
                   ),

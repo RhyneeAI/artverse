@@ -30,7 +30,6 @@ class NewsModel {
   
   factory NewsModel.fromJson(Map<String, dynamic> json) {
     final bookmarksCount = (json['bookmarks'] as List?)?.firstOrNull?['count'] ?? 0;
-    print(bookmarksCount);
 
     return NewsModel(
       id: json['id']?.toString() ?? '',

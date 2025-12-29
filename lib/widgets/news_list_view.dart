@@ -1,15 +1,18 @@
+import 'package:artverse/controllers/auth_controller.dart';
+import 'package:artverse/controllers/bookmark_controller.dart';
 import 'package:artverse/screens/news_detail_screen.dart';
 import 'package:artverse/utils/categories_icon.dart';
 import 'package:artverse/utils/date.dart';
 import 'package:artverse/utils/constants.dart';
+import 'package:artverse/utils/snackbar.dart';
 import 'package:flutter/material.dart';
 import '../models/news_model.dart';
 import 'package:shimmer/shimmer.dart';
 
-class NewsListView extends StatelessWidget {
+class NewsListView extends StatefulWidget {
   final List<NewsModel>? newsList;
   final bool isLoading;
-
+  
   const NewsListView({
     super.key,
     this.newsList,
@@ -17,18 +20,75 @@ class NewsListView extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final showSkeleton = isLoading || newsList == null;
+  State<NewsListView> createState() => _NewsListViewState();
+}
+
+class _NewsListViewState extends State<NewsListView> {
+  final BookmarkController _bookmarkController = BookmarkController();
+  final AuthController _authController = AuthController();
+
+  final Map<String, bool> _bookmarkStates = {};
+  final Map<String, bool> _animatingStates = {};
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize states dari data awal
+    if (widget.newsList != null) {
+      for (var news in widget.newsList!) {
+        _bookmarkStates[news.id!] = news.isBookmarked ?? false;
+      }
+    }
+  }
+
+  Future<void> _toggleBookmark(NewsModel news) async {
+    if (news.id == null) return;
     
+    setState(() => _animatingStates[news.id!] = true);
+
+    try {
+      final user = await _authController.getCurrentUser();
+      if (user?.id == null) {
+        SnackbarUtils.showError(context, 'Please login first');
+        return;
+      }
+      
+      final newState = await _bookmarkController.addBookmark(
+        news.id!,
+        user!.id!,
+      );
+      
+      setState(() {
+        _bookmarkStates[news.id!] = newState;
+        _animatingStates[news.id!] = false;
+      });
+    } catch (e) {
+      setState(() => _animatingStates[news.id!] = false);
+      SnackbarUtils.showError(context, 'Failed: $e');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final showSkeleton = widget.isLoading || widget.newsList == null;
+    // print("skeleton: ${showSkeleton}");
+    // print("widgetloading: ${widget.isLoading}");
+    // print("newslist: ${widget.newsList}");
+
     return ListView.separated(
       padding: const EdgeInsets.symmetric(vertical: 16),
-      itemCount: showSkeleton ? 5 : newsList!.length,
+      itemCount: showSkeleton ? 5 : widget.newsList!.length,
       separatorBuilder: (_, __) => const SizedBox(height: 20),
       itemBuilder: (context, index) {
         if (showSkeleton) {
           return _buildSkeletonItem(context);
         }
-        return _buildNewsItem(context, newsList![index]);
+
+        final news = widget.newsList![index];
+        final isBookmarked = _bookmarkStates[news.id!] ?? false;
+        final isAnimating = _animatingStates[news.id!] ?? false;
+        
+        return _buildNewsItem(context, news, isBookmarked, isAnimating);
       }
     );
   }
@@ -134,10 +194,11 @@ class NewsListView extends StatelessWidget {
     );
   }
 
-  Widget _buildNewsItem(BuildContext context, NewsModel news) {
+  Widget _buildNewsItem(BuildContext context, NewsModel news, bool isBookmarked, bool isAnimating) {
     final isNew = news.createdAt != null 
         ? DateTime.now().difference(news.createdAt!).inDays <= 7
         : false;
+
     String limitText(String text, {int maxLength = 10}) {
       if (text.length <= maxLength) return text;
       return '${text.substring(0, maxLength)}...';
@@ -156,14 +217,37 @@ class NewsListView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Thumbnail
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.network(
-              news.newsImageUrl.toString(), 
-              width: 90,
-              height: 90,
-              fit: BoxFit.cover,
-            ),
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  news.newsImageUrl.toString(), 
+                  width: 90,
+                  height: 90,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Positioned(
+                top: 4,
+                right: 4,
+                child: GestureDetector(
+                  onTap: () => _toggleBookmark(news),
+                  child: AnimatedContainer(
+                    duration: Duration(milliseconds: 200),
+                    child: isAnimating
+                        ? CircularProgressIndicator(color: Colors.white, strokeWidth: 2)
+                        : Icon(
+                            isBookmarked 
+                                ? Icons.bookmark 
+                                : Icons.bookmark_border,
+                            color: Colors.white,
+                            size: 30,
+                          ),
+                  ),
+                ),
+              ),
+            ],
           ),
           const SizedBox(width: 12),
           Expanded(

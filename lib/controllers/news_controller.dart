@@ -132,11 +132,9 @@ class NewsController {
       final popularNews = List<NewsModel>.from(allNewsList);
       popularNews.sort((a, b) => b.totalVisit!.compareTo(a.totalVisit!));
 
-      // Cek apakah ada yang visit > 0
       final hasPopular = popularNews.any((news) => news.totalVisit! > 0);
 
       if (!hasPopular) {
-        // Ambil 3 terbaru jika tidak ada yang popular
         popularNews.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
       }
 

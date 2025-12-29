@@ -39,74 +39,91 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _loadData() async {
+  Future<void> _loadData() async {
+    setState(() {
+      _categories = [];
+      _allNews = [];
+      _popularNews = [];
+      _showSkeleton = true;
+    });
+    
     final categories = await _categoryController.getCategories();
     final newsData = await _newsController.getHomeNewsData();
-
+    
     setState(() {
       _categories = categories;
       _allNews = newsData['allNews'];
       _popularNews = newsData['popularNews'];
+      _showSkeleton = false;
     });
 
     // print("skeleton: ${_showSkeleton}");
     // print("newsIsLoad: ${_newsController.isLoading}");
 
-    print("asdsa:${_popularNews[0].title}");
+    // print("asdsa:${_popularNews[0].title}");
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SearchBarWidget(
-                controller: _searchController,
-                readOnly: true,
-                onTap: () {
-                  _loadData();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const SearchScreen(),
-                    ),
-                  );
-                },
-                onFilterTap: () async{
-                final result = await Navigator.push<Set<String>>(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const ChooseTopicsScreen(),
-                    ),
-                  );
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await _loadData();
+          },
+          child: SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SearchBarWidget(
+                  controller: _searchController,
+                  readOnly: true,
+                  onTap: () {
+                    _loadData();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const SearchScreen(),
+                      ),
+                    );
+                  },
+                  // onFilterTap: () async{
+                  // final result = await Navigator.push<Set<String>>(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder: (_) => const ChooseTopicsScreen(),
+                  //     ),
+                  //   );
 
-                  if (result != null) {
-                    print(result); // topic terpilih
-                  }
-                },
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                height: 270,
-                child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: _popularNews.length,
-                      separatorBuilder: (_, __) => const SizedBox(width: 24),
-                      itemBuilder: (_, index) => NewsCard(news: _popularNews[index], isLoading: _newsController.isLoading || _showSkeleton),
-                    ),
-              ),
-              const SizedBox(height: 24),
-              CategoryTabSection(
-                categories: _categories,
-                allNews: _allNews,
-                isLoading: _newsController.isLoading || _showSkeleton,
-              ),
-            ],
-          ),
+                  //   if (result != null) {
+                  //     print(result); // topic terpilih
+                  //   }
+                  // },
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  height: 270,
+                  child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _popularNews.length,
+                        separatorBuilder: (_, __) => const SizedBox(width: 24),
+                        itemBuilder: (_, index) => NewsCard(
+                          news: _popularNews[index], 
+                          isLoading: _newsController.isLoading || _showSkeleton,
+                        ),
+                      ),
+                ),
+                const SizedBox(height: 24),
+                CategoryTabSection(
+                  categories: _categories,
+                  allNews: _allNews,
+                  isLoading: _newsController.isLoading || _showSkeleton,
+                ),
+              ],
+            ),
+          )
         )
       ),
     );
