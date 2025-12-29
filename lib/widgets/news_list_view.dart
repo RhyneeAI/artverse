@@ -84,8 +84,8 @@ class _NewsListViewState extends State<NewsListView> {
         final isBookmarked = news.isBookmarked ?? false;
         final isAnimating = _animatingStates[news.id!] ?? false;
 
-        print("isbookmarked: ${isBookmarked}");
-        print("isbookmarked: ${widget.newsList!.length}");
+        // print("isbookmarked: ${isBookmarked}");
+        // print("isbookmarked: ${widget.newsList!.length}");
         
         return _buildNewsItem(context, news, isBookmarked, isAnimating);
       }

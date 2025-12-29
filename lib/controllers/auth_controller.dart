@@ -105,13 +105,19 @@ class AuthController {
   }) async {
     isLoading = true;
     try {
-      await supabase.from('users').update({
+      final res = await supabase.from('users').update({
         'full_name': fullName,
-        'phone': phone,
         'birth_date': birthDate,
         'profile_image': profileImage,
         'updated_at': DateTime.now().toIso8601String(),
       }).eq('id', userId);
+
+      print("res ${res}");
+      print("userId ${userId}");
+      print("fullName ${fullName}");
+      print("birthDate ${birthDate}");
+      print("profileImage ${profileImage}");
+
       
       await supabase.auth.updateUser(
         UserAttributes(data: {
