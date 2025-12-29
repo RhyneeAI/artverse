@@ -2,7 +2,6 @@ import 'package:artverse/controllers/category_controller.dart';
 import 'package:artverse/controllers/news_controller.dart';
 import 'package:artverse/models/category_model.dart';
 import 'package:artverse/models/news_model.dart';
-import 'package:artverse/screens/choosed_topic_screen.dart';
 import 'package:artverse/screens/search_screen.dart';
 import 'package:artverse/widgets/category_tab_section.dart';
 import 'package:artverse/widgets/news_card_widget.dart';
