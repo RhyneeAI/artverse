@@ -1,21 +1,72 @@
+import 'package:artverse/controllers/auth_controller.dart';
+import 'package:artverse/controllers/bookmark_controller.dart';
 import 'package:artverse/controllers/news_controller.dart';
 import 'package:artverse/models/news_model.dart';
 import 'package:artverse/screens/news_detail_screen.dart';
 import 'package:artverse/utils/categories_icon.dart';
 import 'package:artverse/utils/date.dart';
+import 'package:artverse/utils/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-class NewsCard extends StatelessWidget {
+
+class NewsCard extends StatefulWidget {
   final NewsModel? news;
   final bool isLoading;
+  
+  const NewsCard({super.key, this.news, this.isLoading = false});
+
+  @override
+  State<NewsCard> createState() => _NewsCardState();
+}
+
+class _NewsCardState extends State<NewsCard> {
+  bool _isBookmarked = false;
+  bool _isAnimating = false;
+  final BookmarkController _bookmarkController = BookmarkController();
   final NewsController _newsController = NewsController();
 
-  NewsCard({super.key, this.news, this.isLoading = false});
+  final AuthController _authController = AuthController();
+
+  late NewsModel? _news;
+
+  @override
+  void initState() {
+    super.initState();
+    _news = widget.news;
+    _isBookmarked = _news?.isBookmarked ?? false;
+  }
+
+  Future<void> _toggleBookmark() async {
+    if (_news?.id == null) return;
+    
+    setState(() => _isAnimating = true);
+    
+    try {
+      final user = await _authController.getCurrentUser();
+      if (user?.id == null) {
+        SnackbarUtils.showError(context, 'Please login first');
+        return;
+      }
+      
+      final newState = await _bookmarkController.addBookmark(
+        _news!.id!,
+        user!.id!, 
+      );
+      
+      setState(() {
+        _isBookmarked = newState;
+        _isAnimating = false;
+      });
+    } catch (e) {
+      setState(() => _isAnimating = false);
+      SnackbarUtils.showError(context, 'Failed: $e');
+    }
+  }
 
   bool isNew() {
-     if (news!.createdAt == null) return false;
-      return DateTime.now().difference(news!.createdAt!).inDays <= 7;
+     if (_news!.createdAt == null) return false;
+      return DateTime.now().difference(_news!.createdAt!).inDays <= 7;
   }
 
   String timeAgoOrEmpty(DateTime? date) {
@@ -30,7 +81,7 @@ class NewsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading || news == null) {
+    if (widget.isLoading || _news == null) {
       return _buildSkeleton(context);
     }
     return _buildNewsCard(context);
@@ -95,12 +146,12 @@ class NewsCard extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: () async {
-          await _newsController.incrementVisitCount(news!.id.toString());
+          await _newsController.incrementVisitCount(_news!.id.toString());
           
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => NewsDetailScreen(news: news!),
+              builder: (_) => NewsDetailScreen(news: _news!),
             ),
           );
         },
@@ -108,21 +159,43 @@ class NewsCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 🖼️ Banner Image
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.network(
-                news!.newsImageUrl.toString(),
-                height: 160,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    _news!.newsImageUrl.toString(),
+                    height: 160,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: GestureDetector(
+                    onTap: _toggleBookmark,
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: 200),
+                      child: _isAnimating
+                          ? CircularProgressIndicator(color: Colors.white, strokeWidth: 2)
+                          : Icon(
+                              _isBookmarked 
+                                  ? Icons.bookmark 
+                                  : Icons.bookmark_border,
+                              color: Colors.white,
+                            ),
+                    ),
+                  ),
+                ),
+              ],
             ),
 
             const SizedBox(height: 12),
 
             // 🏷️ Category
             Text(
-              news!.category!.name.toString(),
+              _news!.category!.name.toString(),
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 fontWeight: FontWeight.w600,
               ),
@@ -132,7 +205,7 @@ class NewsCard extends StatelessWidget {
 
             // 📰 Title
             Text(
-              news!.title.toString(),
+              _news!.title.toString(),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -151,10 +224,10 @@ class NewsCard extends StatelessWidget {
                   children: [
                     Icon(isNew() ? Icons.new_releases_outlined : Icons.line_style_rounded),
                     const SizedBox(width: 8),
-                    Icon(CategoryUtils.getIcon(news!.category!.icon.toString())),
+                    Icon(CategoryUtils.getIcon(_news!.category!.icon.toString())),
                     const SizedBox(width: 8),
                     Text(
-                      limitText(news!.source.toString(), maxLength: 11),
+                      limitText(_news!.source.toString(), maxLength: 11),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Colors.black,
                         fontWeight: FontWeight.w600,
@@ -173,7 +246,7 @@ class NewsCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      timeAgoOrEmpty(news!.createdAt),
+                      timeAgoOrEmpty(_news!.createdAt),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Colors.grey,
                       ),

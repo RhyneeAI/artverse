@@ -32,8 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _loadData();
 
-    Future.delayed(Duration(milliseconds: 2000), () {
-      if (mounted) {
+    Future.delayed(Duration(milliseconds: 3000), () {
+      if(mounted) {
         setState(() => _showSkeleton = false);
       }
     });
@@ -43,13 +43,16 @@ class _HomeScreenState extends State<HomeScreen> {
     final categories = await _categoryController.getCategories();
     final newsData = await _newsController.getHomeNewsData();
 
-    print(newsData);
-    
     setState(() {
       _categories = categories;
       _allNews = newsData['allNews'];
       _popularNews = newsData['popularNews'];
     });
+
+    // print("skeleton: ${_showSkeleton}");
+    // print("newsIsLoad: ${_newsController.isLoading}");
+
+    print("asdsa:${_popularNews[0].title}");
   }
 
   @override
@@ -89,19 +92,12 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 20),
               SizedBox(
                 height: 270,
-                child: _showSkeleton || _newsController.isLoading
-                    ? ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 3,
-                        separatorBuilder: (_, __) => const SizedBox(width: 24),
-                        itemBuilder: (_, __) => NewsCard(isLoading: true),
-                      )
-                    : ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: _popularNews.length,
-                        separatorBuilder: (_, __) => const SizedBox(width: 24),
-                        itemBuilder: (_, index) => NewsCard(news: _popularNews[index]),
-                      ),
+                child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _popularNews.length,
+                      separatorBuilder: (_, __) => const SizedBox(width: 24),
+                      itemBuilder: (_, index) => NewsCard(news: _popularNews[index], isLoading: _newsController.isLoading || _showSkeleton),
+                    ),
               ),
               const SizedBox(height: 24),
               CategoryTabSection(

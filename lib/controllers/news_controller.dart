@@ -16,6 +16,7 @@ class NewsController {
             news_image:news_image_id(image_url, image_name),
             category:category_id(id, name, icon),
             users:author_id(id, email, full_name)
+            bookmarks:
           ''')
           .or('title.ilike.%$query%,description.ilike.%$query%')
           .order('created_at', ascending: false);
@@ -110,20 +111,23 @@ class NewsController {
   Future<Map<String, dynamic>> getHomeNewsData() async {
     isLoading = true;
     try {
+      final user = supabase.auth.currentUser;
+
       final response = await supabase
           .from('news')
           .select('''
             *,
             news_image:news_image_id(image_url, image_name),
             category:category_id(id, name, icon),
-            users:author_id(id, email, full_name)
+            bookmarks:bookmarks(count)
           ''')
+          .eq('bookmarks.user_id', user!.id)
           .order('created_at', ascending: false);
 
-      
       final allNewsList = (response as List)
           .map<NewsModel>((item) => NewsModel.fromJson(item))
           .toList();
+      // print("response : ${allNewsList[0].isBookmarked}");
 
       final popularNews = List<NewsModel>.from(allNewsList);
       popularNews.sort((a, b) => b.totalVisit!.compareTo(a.totalVisit!));

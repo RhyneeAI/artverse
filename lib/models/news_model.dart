@@ -9,6 +9,7 @@ class NewsModel {
   final String? newsImageUrl;
   final int? totalVisit;
   final DateTime? createdAt;
+  final bool? isBookmarked;
   
   // Relational data
   final CategoryModel? category;
@@ -24,9 +25,13 @@ class NewsModel {
     this.createdAt,
     this.category,
     this.author,
+    this.isBookmarked
   });
   
   factory NewsModel.fromJson(Map<String, dynamic> json) {
+    final bookmarksCount = (json['bookmarks'] as List?)?.firstOrNull?['count'] ?? 0;
+    print(bookmarksCount);
+
     return NewsModel(
       id: json['id']?.toString() ?? '',
       title: json['title']?.toString() ?? '',
@@ -35,6 +40,7 @@ class NewsModel {
       newsImageUrl: json['news_image']?['image_url']?.toString() ?? '',
       totalVisit: int.tryParse(json['total_visit']?.toString() ?? '0') ?? 0,
       createdAt: DateTime.parse(json['created_at'] ?? DateTime.now().toIso8601String()),
+      isBookmarked: bookmarksCount > 0,
       category: CategoryModel(
         id: json['category']?['id']?.toString(),
         name: json['category']?['name']?.toString(),
